@@ -1,0 +1,12 @@
+{
+  "name": "zwave-test",
+  "version": "1.0.0",
+  "author": "Rob Huehn <rob@theatersoft.com>",
+  "scripts": {
+    "BUS": "BUS=`[ -f .bus ] && cat .bus` AUTH=`[ -f .auth ] && cat .auth`",
+    "DEBUG": "npm run BUS -- node --inspect --debug-brk",
+    "RUN": "npm run BUS -- node",
+    "scan": "node scan.js",
+    "debug-scan": "node --inspect --debug-brk scan.js"
+  }
+}
