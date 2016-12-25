@@ -15,6 +15,7 @@ bus.start().then(() =>
     service.start(options))
 
 process.on('SIGINT', () => {
-    service.stop()
-    process.exit()
+    service.stop().then(() => {
+        process.exit()
+    })
 })

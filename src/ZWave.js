@@ -6,6 +6,10 @@ import {command} from './actions'
 const nodes = []
 const zwave = new _ZWave()
 
+    .on('connected', homeid => {
+        console.log('on connected')
+    })
+
     .on('driver ready', homeid => {
         console.log('scanning homeid=0x%s...', homeid.toString(16));
     })
@@ -148,9 +152,8 @@ export class ZWave {
     }
 
     stop () {
-        console.log('zwave.disconnect')
-        bus.unregisterObject(this.name)
-        zwave.disconnect(this.port)
+        return bus.unregisterObject(this.name)
+            .then(() => zwave.disconnect(this.port))
     }
 
     send (cmd) {

@@ -13,8 +13,8 @@
     "link": "npm link; npm link @theatersoft/zwave",
     "link-all": "npm link; npm link @theatersoft/zwave @theatersoft/bus openzwave-shared",
     "bus:start": "npm explore @theatersoft/bus -- npm run start",
-    "start": "npm run RUN -- dist/start.js",
-    "start:dev": "npm run DEVRUN -- dist/start.js",
+    "start": "npm run RUN -- start.js",
+    "start:dev": "npm run DEVRUN -- start.js",
     "debug": "npm run BUS -- node --inspect --debug-brk dist/start.js",
     "debug:dev": "npm run DEVBUS -- node --inspect --debug-brk dist/start.js",
     "publish": "node build.js publish"
