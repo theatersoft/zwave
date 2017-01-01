@@ -117,6 +117,4 @@ ThermostatSetback: 0x47,
 ThermostatSetpoint: 0x43,
 WindowCovering: 0x6A
 }
-
 export default CommandClass
-export const toName = b => (Object.entries(CommandClass).find(([k, v]) => v === b) || [])[1]
