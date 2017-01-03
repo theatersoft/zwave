@@ -1,11 +1,10 @@
 import bus, {EventEmitter} from '@theatersoft/bus'
-import {ON, on, OFF, off} from './actions'
+import reducer from './reducer'
 
 export class Store extends EventEmitter {
-    constructor (reducer, initial = {}) {
+    constructor (reducer, state = {}) {
         super()
-        this.state = initial
-        this.reducer = reducer
+        Object.assign(this, {reducer, state})
     }
 
     getState () {
@@ -21,15 +20,9 @@ export class Store extends EventEmitter {
     }
 }
 
-function reducer (state, action) {
-    //switch (action.type) {
-    //}
-    return state
-}
-
 export default class extends Store {
     constructor (devices = []) {
-        super(reducer, {})
+        super(reducer, {devices})
         console.log(this.state)
     }
 }

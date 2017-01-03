@@ -1,20 +1,20 @@
-import _ZWave from 'openzwave-shared'
+import OpenZwave from 'openzwave-shared'
 import Store from './Store'
 import bus, {EventEmitter} from '@theatersoft/bus'
-import {command} from './actions'
 import CommandClass from './CommandClass'
 import Notification from './Notification'
 import {log} from './log'
+import {setValue} from './actions'
 
 const
     keyOfValue = (o, v) => Object.keys(o).find(k => o[k] == v),
     cidString = cid => keyOfValue(CommandClass, cid)
 const nodes = []
-const zwave = new _ZWave({
+const zwave = new OpenZwave({
     Logging: false,     // disable file logging (OZWLog.txt)
     ConsoleOutput: true // enable console logging
 })
-    .on('connected', hid => log('on connected'))
+    .on('connected', v => log('connected', v))
     .on('driver ready', hid => log(`driver ready`, hid.toString(16)))
     .on('driver failed', () => {
         log('driver failed')
@@ -37,10 +37,12 @@ const zwave = new _ZWave({
         log('value changed', nid, cidString(cid), {old: nodes[nid].cids[cid][value.index].value, new: value.value}, value)
         //if (nodes[nid].ready) {}
         nodes[nid].cids[cid][value.index] = value
+        store.dispatch(setValue(value))
     })
     .on('value removed', (nid, cid, index) => {
         log('value removed', nid, cid, index)
-        if (nodes[nid].cids[cid]) delete nodes[nid].cids[cid][index]
+        //if (nodes[nid].cids[cid])
+        delete nodes[nid].cids[cid][index]
     })
     .on('node ready', (nid, nodeinfo) => {
         log('node ready', nid, nodeinfo)
@@ -82,13 +84,14 @@ const zwave = new _ZWave({
         log('controller commmand feedback', r, s)
     })
 
+let store
+
 export class ZWave {
-    start ({name, config}) {
-        this.name = name
-        this.port = config.port
+    start ({name, config: {port, devices}}) {
+        Object.assign(this, {name, port})
         return bus.registerObject(name, this)
             .then(() => {
-                this.store = new Store()
+                store = new Store(devices)
                     .on('change', state =>
                         bus.signal(`/${this.name}.change`, state))
                 zwave.connect(this.port)
@@ -107,11 +110,11 @@ export class ZWave {
     dispatch (action) {
         return this.send(command(action))
             .then(() =>
-                this.store.dispatch(action))
+                store.dispatch(action))
     }
 
     getState () {
-        return this.store.getState()
+        return store.getState()
     }
 }
 

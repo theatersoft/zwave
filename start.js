@@ -6,7 +6,15 @@ const
         export: 'ZWave',
         name: 'ZWave',
         config: {
-            port: '/dev/ttyACM0'
+            port: '/dev/ttyACM0',
+            devices: [
+                {
+                    name: 'Test motion',
+                    id: '2',
+                    type: 'Alarm',
+                    model: 'ZP3102'
+                }
+            ]
         }
     },
     service = new (require(options.module)[options.export])()
@@ -14,8 +22,5 @@ const
 bus.start().then(() =>
     service.start(options))
 
-process.on('SIGINT', () => {
-    service.stop().then(() => {
-        process.exit()
-    })
-})
+process.on('SIGINT', () =>
+    service.stop().then(() => process.exit()))
