@@ -1,20 +1,18 @@
 export const
-    ON = 'ON',
-    OFF = 'OFF',
-    BRIGHT = 'BRIGHT',
-    DIM = 'DIM'
-
-export const on = id => ({type: ON, id})
-export const off = id => ({type: OFF, id})
-export const bright = (id, n) => ({type: BRIGHT, id, n})
-export const dim = (id, n) => ({type: DIM, id, n})
-
-export const
-    SET_VALUE = 'setvalue',
-    SET_NODE = 'setnode'
+    SET_VALUE = 'SET_VALUE',
+    SET_NODE = 'SET_NODE',
+    ADD_NODE = 'ADD_NODE',
+    REMOVE_NODE = 'REMOVE_NODE',
+    CANCEL_CMD = 'CANCEL_CMD',
+    INIT_DEVICES = 'INIT_DEVICES'
 
 export const
     setValue = value => ({type: SET_VALUE, value}),
-    setNode = info => ({type: SET_NODE, info})
+    setNode = info => ({type: SET_NODE, info}),
+    addNode = () => ({type: ADD_NODE}),
+    removeNode = () => ({type: REMOVE_NODE}),
+    cancelCmd = () => ({type: CANCEL_CMD}),
+    initDevices = devices => ({type: INIT_DEVICES, devices})
+
 
 

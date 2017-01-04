@@ -1,6 +1,5 @@
 import OpenZwave from 'openzwave-shared'
-import Store from './Store'
-import bus, {EventEmitter} from '@theatersoft/bus'
+import store from './store'
 import CommandClass from './CommandClass'
 import Notification from './Notification'
 import {log} from './log'
@@ -84,39 +83,4 @@ const zwave = new OpenZwave({
         log('controller commmand feedback', r, s)
     })
 
-let store
-
-export class ZWave {
-    start ({name, config: {port, devices}}) {
-        Object.assign(this, {name, port})
-        return bus.registerObject(name, this)
-            .then(() => {
-                store = new Store(devices)
-                    .on('change', state =>
-                        bus.signal(`/${this.name}.change`, state))
-                zwave.connect(this.port)
-            })
-    }
-
-    stop () {
-        return bus.unregisterObject(this.name)
-            .then(() => zwave.disconnect(this.port))
-    }
-
-    send (cmd) {
-        return codec.sendCommand(cmd)
-    }
-
-    dispatch (action) {
-        return this.send(command(action))
-            .then(() =>
-                store.dispatch(action))
-    }
-
-    getState () {
-        return store.getState()
-    }
-}
-
-
-
+export default zwave

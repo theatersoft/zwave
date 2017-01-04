@@ -15,8 +15,8 @@ const targets = {
         console.log('target node')
         exec('mkdir -p dist')
         rollup.rollup({
-                entry: 'src/ZWave.js',
-                external: Object.keys(pkg.dependencies),
+                entry: 'src/index.js',
+                external: ['util', ...Object.keys(pkg.dependencies)],
                 plugins: [
                     babel({
                         babelrc: false,

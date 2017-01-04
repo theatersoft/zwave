@@ -1,5 +1,5 @@
 import CommandClass from './CommandClass'
-import {SET_VALUE, on, OFF, off} from './actions'
+import {SET_VALUE, INIT_DEVICES} from './actions'
 
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
@@ -18,6 +18,8 @@ export default function reducer (state, action) {
         if (device)
             return valueReducers[device.type](state, action.value, device)
         break
+    case INIT_DEVICES:
+        return {...state, devices: action.devices}
     }
     return state
 }

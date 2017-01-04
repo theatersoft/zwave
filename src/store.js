@@ -20,9 +20,4 @@ export class Store extends EventEmitter {
     }
 }
 
-export default class extends Store {
-    constructor (devices = []) {
-        super(reducer, {devices})
-        console.log(this.state)
-    }
-}
+export default new Store(reducer, {devices: []})
