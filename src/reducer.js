@@ -1,5 +1,6 @@
 import CommandClass from './CommandClass'
-import {SET_VALUE, INIT_DEVICES} from './actions'
+import {SET_VALUE, INIT_DEVICES, ADD_NODE, REMOVE_NODE, CANCEL_CMD} from './actions'
+import zwave from './zwave'
 
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
@@ -20,6 +21,15 @@ export default function reducer (state, action) {
         break
     case INIT_DEVICES:
         return {...state, devices: action.devices}
+    case ADD_NODE:
+        zwave.addNode(true)
+        return {...state, inclusion: true, exclusion: false}
+    case REMOVE_NODE:
+        zwave.removeNode()
+        return {...state, inclusion: false, exclusion: true}
+    case CANCEL_CMD:
+        zwave.cancelControllerCommand()
+        return {...state, inclusion: false, exclusion: false}
     }
     return state
 }

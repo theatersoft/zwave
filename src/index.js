@@ -21,14 +21,8 @@ export class ZWave {
             .then(() => zwave.disconnect(this.port))
     }
 
-    send (cmd) {
-        return codec.sendCommand(cmd)
-    }
-
     dispatch (action) {
-        return this.send(command(action))
-            .then(() =>
-                store.dispatch(action))
+        return store.dispatch(action)
     }
 
     getState () {
