@@ -1,23 +1,5 @@
 import bus, {EventEmitter} from '@theatersoft/bus'
+import {combineReducers, createStore} from 'redux'
 import reducer from './reducer'
 
-export class Store extends EventEmitter {
-    constructor (reducer, state = {}) {
-        super()
-        Object.assign(this, {reducer, state})
-    }
-
-    getState () {
-        return this.state
-    }
-
-    dispatch (action) {
-        const last = this.state
-        this.state = this.reducer(last, action)
-        if (this.state !== last) {
-            this.emit('change', this.state)
-        }
-    }
-}
-
-export default new Store(reducer, {devices: []})
+export default createStore(reducer, {devices: []})

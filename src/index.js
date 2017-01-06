@@ -10,8 +10,8 @@ export class ZWave {
         return bus.registerObject(name, this)
             .then(() => {
                 store.dispatch(initDevices(devices))
-                store.on('change', state =>
-                    bus.signal(`/${this.name}.change`, state))
+                store.subscribe(() =>
+                    bus.signal(`/${this.name}.change`, store.getState()))
                 zwave.connect(this.port)
             })
     }
