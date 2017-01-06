@@ -23,13 +23,13 @@ export default function reducer (state, action) {
         return {...state, devices: action.devices}
     case ADD_NODE:
         zwave.addNode(true)
-        return {...state, inclusion: true, exclusion: false}
+        return {...state, inclusion: 1}
     case REMOVE_NODE:
         zwave.removeNode()
-        return {...state, inclusion: false, exclusion: true}
+        return {...state, inclusion: -1}
     case CANCEL_CMD:
         zwave.cancelControllerCommand()
-        return {...state, inclusion: false, exclusion: false}
+        return {...state, inclusion: undefined}
     }
     return state
 }

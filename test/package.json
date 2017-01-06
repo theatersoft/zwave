@@ -7,6 +7,7 @@
     "DEBUG": "npm run BUS -- node --inspect --debug-brk",
     "RUN": "npm run BUS -- node",
     "add": "npm run BUS -- node add.js",
+    "remove": "npm run BUS -- node remove.js",
     "scan": "node scan.js",
     "debug-scan": "node --inspect --debug-brk scan.js"
   }
