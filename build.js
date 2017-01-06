@@ -8,6 +8,8 @@ const
     copyright = `/*\n${fs.readFileSync('COPYRIGHT', 'utf8')}\n */`,
     rollup = require('rollup'),
     babel = require('rollup-plugin-babel'),
+    ignore = require('rollup-plugin-ignore'),
+    strip = require('rollup-plugin-strip'),
     pkg = require('./package.json')
 
 const targets = {
@@ -16,7 +18,12 @@ const targets = {
         exec('mkdir -p dist')
         rollup.rollup({
                 entry: 'src/index.js',
-                external: ['redux', 'util', ...Object.keys(pkg.dependencies)],
+                external: [
+                    'redux',
+                    !DIST && 'remote-redux-devtools',
+                    'util',
+                    ...Object.keys(pkg.dependencies)
+                ],
                 plugins: [
                     babel({
                         babelrc: false,
@@ -43,7 +50,9 @@ const targets = {
                             require("babel-plugin-transform-simplify-comparison-operators"),
                             require("babel-plugin-transform-undefined-to-void")
                         ] : [])
-                    })
+                    }),
+                    DIST && ignore(['remote-redux-devtools']),
+                    DIST && strip({functions: ['devToolsEnhancer']})
                 ]
             })
             .then(bundle => {
