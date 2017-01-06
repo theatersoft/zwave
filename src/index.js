@@ -4,14 +4,21 @@ import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
 import {initDevices} from './actions'
 
+const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
+    if (_next !== _state) {
+        _state = _next
+        f(_next)
+    }
+}
+
 export class ZWave {
     start ({name, config: {port, devices}}) {
         Object.assign(this, {name, port})
         return bus.registerObject(name, this)
             .then(() => {
                 store.dispatch(initDevices(devices))
-                store.subscribe(() =>
-                    bus.signal(`/${this.name}.change`, store.getState()))
+                store.subscribe(dedup(store.getState)(state =>
+                    bus.signal(`/${this.name}.state`, state)))
                 zwave.connect(this.port)
             })
     }

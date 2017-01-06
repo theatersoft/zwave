@@ -16,7 +16,7 @@ const targets = {
         exec('mkdir -p dist')
         rollup.rollup({
                 entry: 'src/index.js',
-                external: ['util', ...Object.keys(pkg.dependencies)],
+                external: ['redux', 'util', ...Object.keys(pkg.dependencies)],
                 plugins: [
                     babel({
                         babelrc: false,
