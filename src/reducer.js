@@ -1,5 +1,6 @@
 import CommandClass from './CommandClass'
 import {SET_VALUE, INIT_DEVICES, ADD_NODE, REMOVE_NODE, CANCEL_CMD} from './actions'
+import {ON, OFF, on, off} from './actions'
 import zwave from './zwave'
 
 const valueReducers = {
@@ -30,6 +31,18 @@ export default function reducer (state, action) {
     case CANCEL_CMD:
         zwave.cancelControllerCommand()
         return {...state, inclusion: undefined}
+    case ON:
+        zwave.setValue(Number(action.id), CommandClass.BinarySwitch, 1, 0, true)
+        return {
+            ...state,
+            [action.id]: {value: true, action: off(action.id)}
+        }
+    case OFF:
+        zwave.setValue(Number(action.id), CommandClass.BinarySwitch, 1, 0, false)
+        return {
+            ...state,
+            [action.id]: {value: false, action: on(action.id)}
+        }
     }
     return state
 }

@@ -15,4 +15,10 @@ export const
     initDevices = devices => ({type: INIT_DEVICES, devices})
 
 
+export const
+    ON = 'ON',
+    OFF = 'OFF'
 
+export const
+    on = id => ({type: ON, id}),
+    off = id => ({type: OFF, id})
