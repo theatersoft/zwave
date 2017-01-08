@@ -7,6 +7,7 @@
     "DEBUG": "npm run BUS -- node --inspect --debug-brk",
     "RUN": "npm run BUS -- node",
     "add": "npm run BUS -- node add.js",
+    "healNetwork": "npm run BUS -- node healNetwork.js",
     "on": "npm run BUS -- node on.js",
     "off": "npm run BUS -- node off.js",
     "remove": "npm run BUS -- node remove.js",

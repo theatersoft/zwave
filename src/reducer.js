@@ -1,6 +1,7 @@
 import CommandClass from './CommandClass'
 import {SET_VALUE, INIT_DEVICES, ADD_NODE, REMOVE_NODE, CANCEL_CMD} from './actions'
 import {ON, OFF, on, off} from './actions'
+import {API} from './actions'
 import zwave from './zwave'
 
 const valueReducers = {
@@ -43,6 +44,11 @@ export default function reducer (state, action) {
             ...state,
             [action.id]: {value: false, action: on(action.id)}
         }
+    case API:
+        action.args ?
+            zwave[action.method](...action.args) :
+            zwave[action.method]()
+        break
     }
     return state
 }

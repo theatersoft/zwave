@@ -22,3 +22,7 @@ export const
 export const
     on = id => ({type: ON, id}),
     off = id => ({type: OFF, id})
+
+export const
+    API = 'API',
+    api = (method, args) => ({type: API, method, args})
