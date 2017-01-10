@@ -3,7 +3,7 @@ import store from './store'
 import CommandClass from './CommandClass'
 import Notification from './Notification'
 import {log} from './log'
-import {setValue} from './actions'
+import {setValue, setNode} from './actions'
 
 const
     keyOfValue = (o, v) => Object.keys(o).find(k => o[k] == v),
@@ -26,6 +26,7 @@ const zwave = new OpenZwave({
             cids: {},
             ready: false
         }
+        store.dispatch(setNode(nid, nodes[nid]))
     })
     .on('value added', (nid, cid, value) => {
         log('value added', nid, cidString(cid), value)

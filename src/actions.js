@@ -8,7 +8,7 @@ export const
 
 export const
     setValue = value => ({type: SET_VALUE, value}),
-    setNode = info => ({type: SET_NODE, info}),
+    setNode = (nid, node) => ({type: SET_NODE, nid, node}),
     addNode = () => ({type: ADD_NODE}),
     removeNode = () => ({type: REMOVE_NODE}),
     cancelCmd = () => ({type: CANCEL_CMD}),

@@ -1,5 +1,5 @@
 import CommandClass from './CommandClass'
-import {SET_VALUE, INIT_DEVICES, ADD_NODE, REMOVE_NODE, CANCEL_CMD} from './actions'
+import {SET_VALUE, SET_NODE, INIT_DEVICES, ADD_NODE, REMOVE_NODE, CANCEL_CMD} from './actions'
 import {ON, OFF, on, off} from './actions'
 import {API} from './actions'
 import zwave from './zwave'
@@ -21,6 +21,8 @@ export default function reducer (state, action) {
         if (device)
             return valueReducers[device.type](state, action.value, device)
         break
+    case SET_NODE:
+        return {...state, nodes: {...state.nodes, [action.nid]: action.node}}
     case INIT_DEVICES:
         return {...state, devices: action.devices}
     case ADD_NODE:

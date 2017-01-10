@@ -11,13 +11,20 @@ const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
     }
 }
 
+// BABEL BUG
+//const select = getState => ({devices, nodes, ...rest} = getState()) => ({devices, ...rest})
+const select = getState => () => {
+    const {devices, nodes, ...rest} = getState()
+    return {devices, ...rest}
+}
+
 export class ZWave {
     start ({name, config: {port, devices}}) {
         Object.assign(this, {name, port})
         return bus.registerObject(name, this)
             .then(() => {
                 store.dispatch(initDevices(devices))
-                store.subscribe(dedup(store.getState)(state =>
+                store.subscribe(dedup(select(store.getState))(state =>
                     bus.signal(`/${this.name}.state`, state)))
                 zwave.connect(this.port)
                 bus.proxy('Device').registerService(this.name)
