@@ -4,18 +4,25 @@ import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
 import {initDevices} from './actions'
 
-const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
-    if (_next !== _state) {
-        _state = _next
-        f(_next)
-    }
-}
-
 // BABEL BUG
 //const select = getState => ({devices, nodes, ...rest} = getState()) => ({devices, ...rest})
 const select = getState => () => {
     const {devices, nodes, ...rest} = getState()
     return {devices, ...rest}
+}
+//const equal = (a, b) => (a === b)
+// selected objects require shallow comparison
+const equal = (a, b, _a = Object.keys(a), _b = Object.keys(b)) => (
+    _a.length === _b.length && !_a.find(k =>
+        !_b.includes(k) || a[k] !== b[k]
+    )
+)
+
+const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
+    if (!equal(_next, _state)) {
+        _state = _next
+        f(_next)
+    }
 }
 
 export class ZWave {
