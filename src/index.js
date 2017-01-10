@@ -20,6 +20,7 @@ export class ZWave {
                 store.subscribe(dedup(store.getState)(state =>
                     bus.signal(`/${this.name}.state`, state)))
                 zwave.connect(this.port)
+                bus.proxy('Device').registerService(this.name)
             })
     }
 
