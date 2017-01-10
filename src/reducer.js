@@ -1,5 +1,5 @@
 import CommandClass from './CommandClass'
-import {SET_VALUE, SET_NODE, INIT_DEVICES, ADD_NODE, REMOVE_NODE, CANCEL_CMD} from './actions'
+import {SET_VALUE, SET_NODE, INIT_DEVICES, API_INCLUDE, API_EXCLUDE, API_CANCEL} from './actions'
 import {ON, OFF, on, off} from './actions'
 import {API} from './actions'
 import zwave from './zwave'
@@ -25,13 +25,13 @@ export default function reducer (state, action) {
         return {...state, nodes: {...state.nodes, [action.nid]: action.node}}
     case INIT_DEVICES:
         return {...state, devices: action.devices}
-    case ADD_NODE:
+    case API_INCLUDE:
         zwave.addNode(true)
         return {...state, inclusion: 1}
-    case REMOVE_NODE:
+    case API_EXCLUDE:
         zwave.removeNode()
         return {...state, inclusion: -1}
-    case CANCEL_CMD:
+    case API_CANCEL:
         zwave.cancelControllerCommand()
         return {...state, inclusion: undefined}
     case ON:
