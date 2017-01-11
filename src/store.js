@@ -5,6 +5,6 @@ import reducer from './reducer'
 
 export default createStore(
     reducer,
-    {devices: []},
+    {devices: [], values: {}},
     devToolsEnhancer({name: 'ZWave', realtime: true, port: 6400})
 )

@@ -1,15 +1,18 @@
 import CommandClass from './CommandClass'
 import {SET_VALUE, SET_NODE, INIT_DEVICES, API_INCLUDE, API_EXCLUDE, API_CANCEL} from './actions'
-import {ON, OFF, on, off} from './actions'
+import {ON, OFF} from './actions'
 import {API} from './actions'
 import zwave from './zwave'
 
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
-        if (class_id === CommandClass.Alarm && label === 'Alarm Level' && (!state[device.id] || state[device.id].value !== !!value)) return {
-            ...state,
-            [device.id]: {value: !!value}
-        }
+        if (class_id === CommandClass.Alarm && label === 'Alarm Level'
+            && state.values[device.id] !== !!value // TODO shallow compare if value is object
+        )
+            return {
+                ...state,
+                values: {...state.values, [device.id]: !!value}
+            }
         return state
     }
 }
@@ -22,7 +25,10 @@ export default function reducer (state, action) {
             return valueReducers[device.type](state, action.value, device)
         break
     case SET_NODE:
-        return {...state, nodes: {...state.nodes, [action.nid]: action.node}}
+        return {
+            ...state,
+            nodes: {...state.nodes, [action.nid]: action.node}
+        }
     case INIT_DEVICES:
         return {...state, devices: action.devices}
     case API_INCLUDE:
@@ -35,21 +41,11 @@ export default function reducer (state, action) {
         zwave.cancelControllerCommand()
         return {...state, inclusion: undefined}
     case ON:
-        zwave.setValue(Number(action.id), CommandClass.BinarySwitch, 1, 0, true)
-        return {
-            ...state,
-            [action.id]: {value: true, action: off(action.id)}
-        }
     case OFF:
-        zwave.setValue(Number(action.id), CommandClass.BinarySwitch, 1, 0, false)
-        return {
-            ...state,
-            [action.id]: {value: false, action: on(action.id)}
-        }
+        zwave.setValue(Number(action.id), CommandClass.BinarySwitch, 1, 0, action.type === ON)
+        break // TODO value changed
     case API:
-        action.args ?
-            zwave[action.method](...action.args) :
-            zwave[action.method]()
+        zwave[action.method](...(action.args || []))
         break
     }
     return state
