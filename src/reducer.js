@@ -6,7 +6,7 @@ import zwave from './zwave'
 
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
-        if (class_id === CommandClass.Alarm && label === 'Alarm Level') return {
+        if (class_id === CommandClass.Alarm && label === 'Alarm Level' && (!state[device.id] || state[device.id].value !== !!value)) return {
             ...state,
             [device.id]: {value: !!value}
         }
