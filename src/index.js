@@ -34,7 +34,9 @@ export class ZWave {
                 store.subscribe(dedup(select(store.getState))(state =>
                     bus.signal(`/${this.name}.state`, state)))
                 zwave.connect(this.port)
-                bus.proxy('Device').registerService(this.name)
+                const register = () => bus.proxy('Device').registerService(this.name)
+                bus.registerListener(`/Device.started`, register)
+                register()
             })
     }
 
