@@ -7,8 +7,8 @@ import {initDevices} from './actions'
 // BABEL BUG
 //const select = getState => ({devices, nodes, ...rest} = getState()) => ({devices, ...rest})
 const select = getState => () => {
-    const {devices, nodes, ...rest} = getState()
-    return {devices, ...rest}
+    const {devices} = getState()
+    return {devices}
 }
 //const equal = (a, b) => (a === b)
 // selected objects require shallow comparison

@@ -7,30 +7,34 @@ import zwave from './zwave'
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
         if (class_id === CommandClass.Alarm && label === 'Alarm Level'
-            && state.values[device.id] !== !!value // TODO shallow compare if value is object
+            && device.value !== !!value // TODO shallow compare if value is object
         )
             return {
                 ...state,
-                values: {...state.values, [device.id]: !!value}
+                devices: {
+                    ...state.devices,
+                    [device.id]: {...device, value: !!value}
+                }
             }
         return state
     }
 }
 
+const index = arr => arr.reduce((o, e) => {
+    o[e.id] = e;
+    return o
+}, {})
+
 export default function reducer (state, action) {
     switch (action.type) {
     case SET_VALUE:
-        const device = state.devices.find(d => d.id === String(action.value.node_id))
-        if (device)
-            return valueReducers[device.type](state, action.value, device)
+        const device = state.devices[String(action.value.node_id)]
+        if (device) return valueReducers[device.type](state, action.value, device)
         break
     case SET_NODE:
-        return {
-            ...state,
-            nodes: {...state.nodes, [action.nid]: action.node}
-        }
+        return {...state, nodes: {...state.nodes, [action.nid]: action.node}}
     case INIT_DEVICES:
-        return {...state, devices: action.devices}
+        return {...state, devices: index(action.devices)}
     case API_INCLUDE:
         zwave.addNode(true)
         return {...state, inclusion: 1}
