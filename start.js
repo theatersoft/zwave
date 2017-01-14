@@ -6,7 +6,7 @@ const
         export: 'ZWave',
         name: 'ZWave',
         config: {
-            port: '/dev/ttyACM0',
+            port: '/dev/zwave',
             devices: [
                 {
                     name: 'Test motion',
