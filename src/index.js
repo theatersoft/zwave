@@ -1,5 +1,5 @@
-import zwave from './zwave'
 import store from './store'
+import zwave from './zwave'
 import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
 import {initDevices} from './actions'
@@ -30,10 +30,10 @@ export class ZWave {
         Object.assign(this, {name, port})
         return bus.registerObject(name, this)
             .then(() => {
+                zwave.connect(this.port)
                 store.dispatch(initDevices(devices))
                 store.subscribe(dedup(select(store.getState))(state =>
                     bus.signal(`/${this.name}.state`, state)))
-                zwave.connect(this.port)
                 const register = () => bus.proxy('Device').registerService(this.name)
                 bus.registerListener(`/Device.started`, register)
                 register()

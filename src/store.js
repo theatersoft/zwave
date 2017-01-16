@@ -3,10 +3,13 @@ import {combineReducers, createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'remote-redux-devtools'
 import reducer from './reducer'
+import zwave, {setStore} from './zwave'
 
-export default createStore(
+const store = createStore(
     reducer,
     {devices: {}},
     (composeWithDevTools({name: 'ZWave', realtime: true, port: 6400}) || (x => x))
-    (applyMiddleware(thunk))
+    (applyMiddleware(thunk.withExtraArgument({zwave})))
 )
+setStore(store)
+export default store
