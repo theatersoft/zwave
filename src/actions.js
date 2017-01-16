@@ -10,11 +10,13 @@ export const
 // zwave api
 export const
     API = 'API',
+    DO_API = 'DO_API',
     API_INCLUDE = 'API_INCLUDE',
     API_EXCLUDE = 'API_EXCLUDE',
     API_CANCEL = 'API_CANCEL'
 export const
     api = (method, args) => ({type: API, method, args}),
+    doApi = (method, args) => (dispatch, getState, {zwave}) => zwave[method](...args),
     apiInclude = () => ({type: API_INCLUDE}),
     apiExclude = () => ({type: API_EXCLUDE}),
     apiCancel = () => ({type: API_CANCEL})

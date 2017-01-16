@@ -2,7 +2,7 @@ import store from './store'
 import zwave from './zwave'
 import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
-import {initDevices} from './actions'
+import {initDevices, API, doApi} from './actions'
 
 // BABEL BUG
 //const select = getState => ({devices, nodes, ...rest} = getState()) => ({devices, ...rest})
@@ -46,6 +46,7 @@ export class ZWave {
     }
 
     dispatch (action) {
+        if (action.type === API) return store.dispatch(doApi(action.method, action.args))
         return store.dispatch(action)
     }
 

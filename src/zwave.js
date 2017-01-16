@@ -69,19 +69,6 @@ export function setStore (store) {
         })
         .on('scan complete', () => {
             log('scan complete')
-            // set dimmer node 5 to 50%
-            //zwave.setValue(5,38,1,0,50)
-            //zwave.setValue( {node_id:5, class_id: 38, instance:1, index:0}, 50)
-            // Add a new device to the ZWave controller
-            if (zwave.hasOwnProperty('beginControllerCommand')) {
-                // using legacy mode (OpenZWave version < 1.3) - no security
-                zwave.beginControllerCommand('AddDevice', true)
-            } else {
-                // using new security API
-                // set this to 'true' for secure devices eg. door locks
-
-                //zwave.addNode(true)
-            }
         })
         .on('controller command', (r, s) => {
             log('controller commmand feedback', r, s)
