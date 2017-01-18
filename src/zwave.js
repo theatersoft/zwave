@@ -1,9 +1,8 @@
 import OpenZwave from 'openzwave-shared'
-import store from './store'
 import CommandClass from './CommandClass'
 import Notification from './Notification'
 import {log} from './log'
-import {setValue, setNode} from './actions'
+import {nodeAdded, readyNode, addValue, changeValue, valueRemoved} from './actions'
 
 const
     keyOfValue = (o, v) => Object.keys(o).find(k => o[k] == v),
@@ -24,45 +23,26 @@ export function setStore (store) {
         })
         .on('node added', nid => {
             log('node added', nid)
-            nodes[nid] = {
-                //manufacturer, manufacturerid, product, producttype, productid, type, name, loc
-                cids: {},
-                ready: false
-            }
-            store.dispatch(setNode(nid, nodes[nid]))
+            store.dispatch(nodeAdded(nid))
         })
         .on('value added', (nid, cid, value) => {
             log('value added', nid, cidString(cid), value)
-            if (!nodes[nid].cids[cid]) nodes[nid].cids[cid] = {}
-            nodes[nid].cids[cid][value.index] = value
+            store.dispatch(addValue(value))
         })
         .on('value changed', (nid, cid, value) => {
-            log('value changed', nid, cidString(cid), {old: nodes[nid].cids[cid][value.index].value, new: value.value}, value)
-            //if (nodes[nid].ready) {}
-            nodes[nid].cids[cid][value.index] = value
-            store.dispatch(setValue(value))
+            log('value changed', nid, cidString(cid), value)
+            store.dispatch(changeValue(value))
         })
         .on('value removed', (nid, cid, index) => {
             log('value removed', nid, cid, index)
-            //if (nodes[nid].cids[cid])
-            delete nodes[nid].cids[cid][index]
+            store.dispatch(valueRemoved(nid, cid, index))
         })
+
         .on('node ready', (nid, nodeinfo) => {
             log('node ready', nid, nodeinfo)
-            Object.assign(nodes[nid], nodeinfo, {ready: true})
-            for (const cid in nodes[nid].cids) {
-                switch (cid) {
-                case CommandClass.BinarySwitch:
-                case CommandClass.MultilevelSwitch:
-                    zwave.enablePoll(nid, cid)
-                    break
-                }
-                const values = nodes[nid].cids[cid]
-                log(`+++ node ${nid} class ${cidString(cid)} values`)
-                for (const i in values) log(values[i].label, values[i].value)
-            }
-            log('nodes', nodes)
+            store.dispatch(readyNode(nid, nodeinfo))
         })
+
         .on('notification', (nid, notif) => {
             log('notification', nid, keyOfValue(Notification, notif))
             log('nodes', nodes)
