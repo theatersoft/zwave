@@ -29,10 +29,30 @@ export const
         //TODO update device value
     }
 
-import {nodeinfoSet} from './index'
+import {nodeinfoSet, deviceSet} from './index'
 export const
     readyNode = (nid, nodeinfo) => (dispatch, getState, {zwave}) => {
         log('nodeReady', nid, nodeinfo)
         dispatch(nodeinfoSet(nid, nodeinfo))
-        //TODO create device
+        const device = classifyDevice(nid, getState().nodes[nid])
+        if (device) dispatch(deviceSet(device))
     }
+
+//import {DeviceInterface, DeviceType} from '@theatersoft/device'
+const DeviceInterface = {
+    SWITCH_BINARY: 'SwitchBinary',
+    SWITCH_MULTILEVEL: 'SwitchMultilevel',
+    SENSOR_BINARY: 'SensorBinary',
+    SENSOR_MULTILEVEL: 'SensorMultilevel'
+}
+const classifyDevice = (nid, {type, name, values}) => {
+    const id = String(nid)
+    switch (type) {
+    case 'Binary Power Switch':
+        return {id, name, intf: DeviceInterface.SWITCH_BINARY}
+    case 'Multilevel Power Switch':
+        return {id, name, intf: DeviceInterface.SWITCH_MULTILEVEL}
+    case 'Home Security Sensor':
+        return {id, name, intf: DeviceInterface.SENSOR_BINARY}
+    }
+}

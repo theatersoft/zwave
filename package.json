@@ -11,7 +11,7 @@
     "build": "time -p node build.js && ls -l dist",
     "build:dist": "DIST=true npm run build",
     "link": "npm link; npm link @theatersoft/zwave",
-    "link-all": "npm link; npm link @theatersoft/zwave @theatersoft/bus openzwave-shared",
+    "link-all": "npm link; npm link @theatersoft/zwave @theatersoft/device @theatersoft/bus openzwave-shared",
     "bus:start": "npm explore @theatersoft/bus -- npm run start",
     "start": "npm run RUN -- start.js",
     "start:dev": "npm run DEVRUN -- start.js",

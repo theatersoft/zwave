@@ -1,5 +1,6 @@
+import {log} from './log'
 import CommandClass from './CommandClass'
-import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED} from './actions'
+import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET} from './actions'
 
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
@@ -60,12 +61,19 @@ export default function reducer (state, action) {
     }
     case VALUE_REMOVED:
     {
+        const {nid, cid, index} = action
+        log('value removed', nid, cid, index)
         debugger
     }
-        //case SET_VALUE:
-        //    const device = state.devices[String(action.value.node_id)]
-        //    if (device) return valueReducers[device.type](state, action.value, device)
-        //    break
+    case DEVICE_SET:
+    {
+        const {device} = action
+        return {
+            ...state, devices: {
+                ...state.devices, [device.id]: device
+            }
+        }
+    }
     }
     return state
 }
