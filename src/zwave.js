@@ -5,8 +5,9 @@ import {log} from './log'
 import {nodeSet, readyNode, addValue, changeValue, valueRemoved} from './actions'
 
 const zwave = new OpenZwave({
-    Logging: false,     // disable file logging (OZWLog.txt)
-    ConsoleOutput: true // enable console logging
+    Logging: true,
+    ConsoleOutput: true,
+    SaveConfiguration: false
 })
 export default zwave
 export function setStore (store) {

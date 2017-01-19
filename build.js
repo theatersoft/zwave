@@ -20,6 +20,7 @@ const targets = {
         rollup.rollup({
                 entry: 'src/index.js',
                 external: [
+                    '@theatersoft/device',
                     'redux',
                     'redux-thunk',
                     !DIST && 'remote-redux-devtools',

@@ -38,21 +38,15 @@ export const
         if (device) dispatch(deviceSet(device))
     }
 
-//import {DeviceInterface, DeviceType} from '@theatersoft/device'
-const DeviceInterface = {
-    SWITCH_BINARY: 'SwitchBinary',
-    SWITCH_MULTILEVEL: 'SwitchMultilevel',
-    SENSOR_BINARY: 'SensorBinary',
-    SENSOR_MULTILEVEL: 'SensorMultilevel'
-}
+import {Type} from '@theatersoft/device'
 const classifyDevice = (nid, {type, name, values}) => {
     const id = String(nid)
     switch (type) {
     case 'Binary Power Switch':
-        return {id, name, intf: DeviceInterface.SWITCH_BINARY}
+        return {id, name, type: Type.Switch}
     case 'Multilevel Power Switch':
-        return {id, name, intf: DeviceInterface.SWITCH_MULTILEVEL}
+        return {id, name, type: Type.Dimmer}
     case 'Home Security Sensor':
-        return {id, name, intf: DeviceInterface.SENSOR_BINARY}
+        return {id, name, type: Type.MotionSensor}
     }
 }
