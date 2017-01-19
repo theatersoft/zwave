@@ -1,4 +1,5 @@
 import CommandClass from '../CommandClass'
+import {Type} from '@theatersoft/device'
 import {ON, OFF} from './index'
 import {log} from '../log'
 
@@ -38,15 +39,28 @@ export const
         if (device) dispatch(deviceSet(device))
     }
 
-import {Type} from '@theatersoft/device'
 const classifyDevice = (nid, {type, name, values}) => {
     const id = String(nid)
-    switch (type) {
-    case 'Binary Power Switch':
-        return {id, name, type: Type.Switch}
-    case 'Multilevel Power Switch':
-        return {id, name, type: Type.Dimmer}
-    case 'Home Security Sensor':
-        return {id, name, type: Type.MotionSensor}
+    type = ({
+        'Binary Power Switch': Type.Switch,
+        'Multilevel Power Switch': Type.Dimmer,
+        'Home Security Sensor': Type.MotionSensor
+    }[type])
+    if (!type) {
+        for (const match of typeMatch) {
+            type = match(values)
+            if (type) break
+        }
+    }
+    if (type) {
+        name = name || `ZWave.${id}`
+        return {id, name, type}
     }
 }
+
+const typeMatch = [
+    values => {
+        if (Object.entries(values).find(([k, v]) => v.class_id === CommandClass.Alarm))
+            return Type.MotionSensor
+    }
+]
