@@ -49,11 +49,12 @@ export default function reducer (state, action) {
             {value} = action,
             {node_id, value_id} = value,
             node = state.nodes[node_id]
+        if (!node) break
         return {
             ...state, nodes: {
                 ...state.nodes, [node_id]: {
                     ...node, values: {
-                        ...(node ? node.values : {}), [value_id]: value
+                        ...node.values, [value_id]: value
                     }
                 }
             }
