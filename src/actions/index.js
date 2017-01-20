@@ -8,7 +8,9 @@ export const
     VALUE_REMOVED = 'VALUE_REMOVED',
     valueRemoved = (nid, cid, index) => ({type: VALUE_SET, nid, cid, index}),
     DEVICE_SET = 'DEVICE_SET',
-    deviceSet = (device) => ({type: DEVICE_SET, device})
+    deviceSet = (device) => ({type: DEVICE_SET, device}),
+    DEVICE_VALUE_SET = 'DEVICE_VALUE_SET',
+    deviceValueSet = (id, value) => ({type: VALUE_SET, id, value})
 
 export * from './apiActions'
 export * from './switchActions'

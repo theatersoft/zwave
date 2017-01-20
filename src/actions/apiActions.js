@@ -1,5 +1,5 @@
 import CommandClass from '../CommandClass'
-import {Type} from '@theatersoft/device'
+import {Type, Interface, toInterface} from '@theatersoft/device'
 import {ON, OFF} from './index'
 import {log} from '../log'
 
@@ -17,17 +17,20 @@ export const
         }
     }
 
-import {valueSet} from './index'
+import {valueSet, deviceValueSet} from './index'
 export const
     addValue = (value) => (dispatch, getState, {zwave}) => {
         log('valueAdded', value)
         dispatch(valueSet(value))
-        //TODO update device value
     },
     changeValue = (value) => (dispatch, getState, {zwave}) => {
         log('valueChanged', value)
         dispatch(valueSet(value))
-        //TODO update device value
+        const
+            id = String(value.node_id),
+            device = getState().devices[id]
+        if (device && getTypeCid(device.type) === value.class_id)
+            dispatch(deviceValueSet(id, value.value))
     }
 
 import {nodeinfoSet, deviceSet} from './index'
@@ -41,11 +44,11 @@ export const
 
 const classifyDevice = (nid, {type, name, values}) => {
     const id = String(nid)
-    type = ({
+    type = {
         'Binary Power Switch': Type.Switch,
         'Multilevel Power Switch': Type.Dimmer,
         'Home Security Sensor': Type.MotionSensor
-    }[type])
+    }[type]
     if (!type) {
         for (const match of typeMatch) {
             type = match(values)
@@ -54,13 +57,28 @@ const classifyDevice = (nid, {type, name, values}) => {
     }
     if (type) {
         name = name || `ZWave.${id}`
-        return {id, name, type}
+        const value = getTypeValue(type, values)
+        return {id, name, type, value}
     }
 }
 
-const typeMatch = [
-    values => {
-        if (Object.entries(values).find(([k, v]) => v.class_id === CommandClass.Alarm))
-            return Type.MotionSensor
+const
+    getCidValue = (cid, values) => {
+        const entry = Object.entries(values).find(([k, v]) => v.class_id === cid)
+        if (entry) return entry[1]
+    },
+    typeMatch = [
+        values => getCidValue(CommandClass.Alarm, values) && Type.MotionSensor
+    ],
+    getTypeCid = type => ({
+        [Interface.SWITCH_BINARY]: CommandClass.BinarySwitch
+    }[toInterface(type)]),
+    getTypeValue = (type, values) => {
+        const reader = {
+            [Interface.SWITCH_BINARY]: values => getCidValue(CommandClass.BinarySwitch, values)
+        }[toInterface(type)]
+        if (reader) {
+            const value = reader(values)
+            return value && value.value
+        }
     }
-]

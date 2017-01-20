@@ -2,7 +2,7 @@
 const {start, zwave} = require('./zwave')
 start(async () => {
     try {
-        const nid = 7
+        const nid = 6
 
         //zwave.writeConfig()
         //console.log('getNeighbors', await zwave.getNeighbors())
@@ -10,7 +10,7 @@ start(async () => {
         //await zwave.getNumGroups(nid) // 1
         //await zwave.getMaxAssociations(nid, 1) // 5
         //await zwave.getAssociations(nid, 1) // [ 1, 255 ]
-        //await zwave.removeAssociation(nid, 1, 255)
+        await zwave.removeAssociation(nid, 1, 255)
 
 //2017-01-19 09:42:21.209 Info, Node007, Association::Remove - Removing node 255 from group 1 of node 7
 //2017-01-19 09:42:21.209 Detail,
@@ -22,7 +22,7 @@ start(async () => {
         //console.log('hasNodeFailed', await zwave.hasNodeFailed(nid))
         //console.log('removeFailedNode', await zwave.removeFailedNode(nid))
 
-        await zwave.removeNode()
+        //await zwave.removeNode()
         //await zwave.addNode(true)
         //zwave.cancelControllerCommand()
 

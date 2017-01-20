@@ -1,6 +1,6 @@
 import {log} from './log'
 import CommandClass from './CommandClass'
-import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET} from './actions'
+import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET} from './actions'
 
 const valueReducers = {
     Alarm (state, {class_id, label, value}, device) {
@@ -53,7 +53,7 @@ export default function reducer (state, action) {
             ...state, nodes: {
                 ...state.nodes, [node_id]: {
                     ...node, values: {
-                        ...node.values, [value_id]: value
+                        ...(node ? node.values : {}), [value_id]: value
                     }
                 }
             }
@@ -71,6 +71,16 @@ export default function reducer (state, action) {
         return {
             ...state, devices: {
                 ...state.devices, [device.id]: device
+            }
+        }
+    }
+    case DEVICE_VALUE_SET: {
+        const {id, value} = action
+        return {
+            ...state, devices: {
+                ...state.devices, [id]: {
+                    ...state.devices[id], value
+                }
             }
         }
     }
