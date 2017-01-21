@@ -6,15 +6,7 @@ const
         export: 'ZWave',
         name: 'ZWave',
         config: {
-            port: '/dev/zwave',
-            devices: [
-                {
-                    name: 'Test motion',
-                    id: '2',
-                    type: 'Alarm',
-                    model: 'ZP3102'
-                }
-            ]
+            port: '/dev/zwave'
         }
     },
     service = new (require(options.module)[options.export])()
