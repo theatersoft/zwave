@@ -17,20 +17,22 @@ export const
         const
             intf = interfaceOfType(device.type)
         switch (intf) {
-        case Interface.SWITCH_BINARY: {
+        case Interface.SWITCH_BINARY:
+        {
             switch (type) {
             case ON:
             case OFF:
-                zwave.setValue(Number(id), cidOfInterface(intf), 1, 0, action.type === ON)
+                zwave.setValue(Number(id), CommandClass.BinarySwitch, 1, 0, action.type === ON)
                 return
             }
             return
         }
-        case Interface.SWITCH_MULTILEVEL: {
+        case Interface.SWITCH_MULTILEVEL:
+        {
             switch (type) {
             case ON:
             case OFF:
-                zwave.setValue(Number(id), cidOfInterface(intf), 1, 0, action.type === ON ? 255 : 0)
+                zwave.setValue(Number(id), CommandClass.MultilevelSwitch, 1, 0, action.type === ON ? 255 : 0)
                 return
             }
             return
@@ -50,12 +52,13 @@ export const
         const
             id = String(value.node_id),
             device = getState().devices[id]
-        if (device) {
-            const
-                intf = interfaceOfType(device.type)
-            if (cidOfInterface(intf) === value.class_id && value.index === 0)
-                dispatch(deviceValueSet(id, value.value))
-        }
+        if (!device) return
+        const
+            intf = interfaceOfType(device.type),
+            cid = cidOfInterface(intf),
+            index = getCidValueIndex(cid)
+        if (cid === value.class_id && index === value.index)
+            dispatch(deviceValueSet(id, value.value))
     }
 
 import {nodeinfoSet, deviceSet} from './index'
@@ -95,7 +98,8 @@ const
         [Interface.SENSOR_BINARY]: CommandClass.Alarm
     }[intf]),
     getCidValuesValue = (cid, values) => {
-        const entry = Object.entries(values).find(([k, v]) => v.class_id === cid)
+        const entry = Object.entries(values)
+            .find(([k, v]) => v.class_id === cid && v.index === getCidValueIndex(cid))
         if (entry) return entry[1]
     },
     getInterfaceValuesValue = (intf, values) => {
@@ -104,4 +108,8 @@ const
             value = getCidValuesValue(cid, values)
         return value && value.value
     },
-    getTypeValuesValue = (type, values) => getInterfaceValuesValue(interfaceOfType(type), values)
+    getTypeValuesValue = (type, values) =>
+        getInterfaceValuesValue(interfaceOfType(type), values),
+    getCidValueIndex = cid =>
+        cid === CommandClass.Alarm ? 1 : 0
+
