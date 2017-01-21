@@ -1,19 +1,40 @@
 import CommandClass from '../CommandClass'
-import {Type, Interface, toInterface} from '@theatersoft/device'
+import {Type, Interface, interfaceOfType} from '@theatersoft/device'
 import {ON, OFF} from './index'
 import {log} from '../log'
 
 export const
     API = 'API',
     api = action => (dispatch, getState, {zwave}) => {
-        switch (action.type) {
-        case API:
+        if (action.type === API) {
             const {method, args} = action
             return zwave[method](...args)
-        case ON:
-        case OFF:
-            zwave.setValue(Number(action.id), CommandClass.BinarySwitch, 1, 0, action.type === ON)
-            break // TODO value changed
+        }
+        const
+            {id, type} = action,
+            device = getState().devices[id]
+        if (!device) throw `no device for ${action}`
+        const
+            intf = interfaceOfType(device.type)
+        switch (intf) {
+        case Interface.SWITCH_BINARY: {
+            switch (type) {
+            case ON:
+            case OFF:
+                zwave.setValue(Number(id), cidOfInterface(intf), 1, 0, action.type === ON)
+                return
+            }
+            return
+        }
+        case Interface.SWITCH_MULTILEVEL: {
+            switch (type) {
+            case ON:
+            case OFF:
+                zwave.setValue(Number(id), cidOfInterface(intf), 1, 0, action.type === ON ? 255 : 0)
+                return
+            }
+            return
+        }
         }
     }
 
@@ -29,8 +50,12 @@ export const
         const
             id = String(value.node_id),
             device = getState().devices[id]
-        if (device && getTypeCid(device.type) === value.class_id)
-            dispatch(deviceValueSet(id, value.value))
+        if (device) {
+            const
+                intf = interfaceOfType(device.type)
+            if (cidOfInterface(intf) === value.class_id && value.index === 0)
+                dispatch(deviceValueSet(id, value.value))
+        }
     }
 
 import {nodeinfoSet, deviceSet} from './index'
@@ -38,47 +63,45 @@ export const
     readyNode = (nid, nodeinfo) => (dispatch, getState, {zwave}) => {
         log('nodeReady', nid, nodeinfo)
         dispatch(nodeinfoSet(nid, nodeinfo))
-        const device = classifyDevice(nid, getState().nodes[nid])
+        const device = deviceOfNode(nid, getState().nodes[nid])
         if (device) dispatch(deviceSet(device))
     }
 
-const classifyDevice = (nid, {type, name, values}) => {
-    const id = String(nid)
-    type = {
-        'Binary Power Switch': Type.Switch,
-        'Multilevel Power Switch': Type.Dimmer,
-        'Home Security Sensor': Type.MotionSensor
-    }[type]
-    if (!type) {
-        for (const match of typeMatch) {
-            type = match(values)
-            if (type) break
-        }
-    }
-    if (type) {
-        name = name || `ZWave.${id}`
-        const value = getTypeValue(type, values)
-        return {id, name, type, value}
-    }
-}
-
 const
-    getCidValue = (cid, values) => {
+    deviceOfNode = (nid, {product, name: _name, values}) => {
+        let type = typeOfValues(values) // TODO persisted type
+        if (type === Type.SecuritySensor && product && product.includes('Motion'))
+            type = Type.MotionSensor
+        if (type) {
+            const
+                id = String(nid),
+                name = _name || `ZWave.${id}`,
+                value = getTypeValuesValue(type, values)
+            return {id, name, type, value}
+        }
+    },
+    typeOfValues = values => {
+        const map = new Map([
+            [CommandClass.BinarySwitch, Type.Switch],
+            [CommandClass.MultilevelSwitch, Type.Dimmer],
+            [CommandClass.Alarm, Type.SecuritySensor]
+        ])
+        for (const [cid, type] of map.entries())
+            if (getCidValuesValue(cid, values)) return type
+    },
+    cidOfInterface = intf => ({
+        [Interface.SWITCH_BINARY]: CommandClass.BinarySwitch,
+        [Interface.SWITCH_MULTILEVEL]: CommandClass.MultilevelSwitch,
+        [Interface.SENSOR_BINARY]: CommandClass.Alarm
+    }[intf]),
+    getCidValuesValue = (cid, values) => {
         const entry = Object.entries(values).find(([k, v]) => v.class_id === cid)
         if (entry) return entry[1]
     },
-    typeMatch = [
-        values => getCidValue(CommandClass.Alarm, values) && Type.MotionSensor
-    ],
-    getTypeCid = type => ({
-        [Interface.SWITCH_BINARY]: CommandClass.BinarySwitch
-    }[toInterface(type)]),
-    getTypeValue = (type, values) => {
-        const reader = {
-            [Interface.SWITCH_BINARY]: values => getCidValue(CommandClass.BinarySwitch, values)
-        }[toInterface(type)]
-        if (reader) {
-            const value = reader(values)
-            return value && value.value
-        }
-    }
+    getInterfaceValuesValue = (intf, values) => {
+        const
+            cid = cidOfInterface(intf),
+            value = getCidValuesValue(cid, values)
+        return value && value.value
+    },
+    getTypeValuesValue = (type, values) => getInterfaceValuesValue(interfaceOfType(type), values)

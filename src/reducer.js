@@ -68,6 +68,7 @@ export default function reducer (state, action) {
     }
     case DEVICE_SET:
     {
+        log(action)
         const {device} = action
         return {
             ...state, devices: {
@@ -75,13 +76,13 @@ export default function reducer (state, action) {
             }
         }
     }
-    case DEVICE_VALUE_SET: {
+    case DEVICE_VALUE_SET:
+    {
+        log(action)
         const {id, value} = action
         return {
             ...state, devices: {
-                ...state.devices, [id]: {
-                    ...state.devices[id], value
-                }
+                ...state.devices, [id]: {...state.devices[id], value}
             }
         }
     }
