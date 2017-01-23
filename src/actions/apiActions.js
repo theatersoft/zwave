@@ -57,7 +57,7 @@ export const
             intf = interfaceOfType(device.type),
             cid = cidOfInterface(intf),
             index = getCidValueIndex(cid)
-        if (cid === value.class_id && index === value.index)
+        if (cid === value.class_id && index === value.index && device.value !== value.value)
             dispatch(deviceValueSet(id, value.value))
     }
 
