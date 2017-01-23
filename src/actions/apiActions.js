@@ -70,16 +70,17 @@ export const
         if (device) dispatch(deviceSet(device))
     }
 
+import {update} from '../cache'
 const
-    deviceOfNode = (nid, {product, name: _name, values}) => {
-        let type = typeOfValues(values) // TODO persisted type
+    deviceOfNode = (id, {product, name, values}) => {
+        let type = typeOfValues(values)
         if (type === Type.SecuritySensor && product && product.includes('Motion'))
             type = Type.MotionSensor
         if (type) {
-            const
-                id = String(nid),
-                name = _name || `ZWave.${id}`,
-                value = getTypeValuesValue(type, values)
+            id = String(id)
+            ({name, type} = update({id, name, type}))
+            if (!name) name = `ZWave.${id}`
+            const value = getTypeValuesValue(type, values)
             return {id, name, type, value}
         }
     },

@@ -3,6 +3,7 @@ import zwave, {setStore} from './zwave'
 import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
 import {api} from './actions'
+import {load} from './cache'
 
 // BABEL BUG
 //const select = getState => ({devices, nodes, ...rest} = getState()) => ({devices, ...rest})
@@ -33,6 +34,7 @@ export class ZWave {
                 zwave.connect(this.port)
                 this.store = createZWaveStore(zwave)
                 setStore(this.store)
+                load(this.store.dispatch)
                 this.store.subscribe(dedup(select(this.store.getState))(state =>
                     bus.signal(`/${this.name}.state`, state)))
                 const register = () => bus.proxy('Device').registerService(this.name)
