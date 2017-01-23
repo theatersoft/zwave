@@ -67,7 +67,12 @@ export const
         log('nodeReady', nid, nodeinfo)
         dispatch(nodeinfoSet(nid, nodeinfo))
         const device = deviceOfNode(nid, getState().nodes[nid])
-        if (device) dispatch(deviceSet(device))
+        if (device) {
+            dispatch(deviceSet(device))
+            const cid = cidOfInterface(interfaceOfType(device.type))
+            if (needsPoll(cid))
+                zwave.enablePoll(nid, cid)
+        }
     }
 
 import {update} from '../cache'
@@ -77,8 +82,8 @@ const
         if (type === Type.SecuritySensor && product && product.includes('Motion'))
             type = Type.MotionSensor
         if (type) {
-            id = String(id)
-            ; ({name, type} = update({id, name, type}))
+            id = String(id);
+            ({name, type} = update({id, name, type}))
             if (!name) name = `ZWave.${id}`
             const value = getTypeValuesValue(type, values)
             return {name, value, type, id}
@@ -112,5 +117,7 @@ const
     getTypeValuesValue = (type, values) =>
         getInterfaceValuesValue(interfaceOfType(type), values),
     getCidValueIndex = cid =>
-        cid === CommandClass.Alarm ? 1 : 0
+        cid === CommandClass.Alarm ? 1 : 0,
+    needsPoll = cid =>
+        (cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch)
 
