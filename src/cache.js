@@ -14,8 +14,8 @@ export const load = dispatch => {
         dispatch(deviceSet(device)))
 }
 
-export const update = ({id, name, type}) => {
-    let device = cache[id] || {id, name, type}
+export const update = ({name, type, id}) => {
+    let device = cache[id] || {name, type, id}
     if (name && name !== device.name)
         device = {...device, name}
     if (type && type !== device.type)

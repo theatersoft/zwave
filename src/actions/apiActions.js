@@ -78,10 +78,10 @@ const
             type = Type.MotionSensor
         if (type) {
             id = String(id)
-            ({name, type} = update({id, name, type}))
+            ; ({name, type} = update({id, name, type}))
             if (!name) name = `ZWave.${id}`
             const value = getTypeValuesValue(type, values)
-            return {id, name, type, value}
+            return {name, value, type, id}
         }
     },
     typeOfValues = values => {

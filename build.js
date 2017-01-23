@@ -25,6 +25,7 @@ const targets = {
                     'redux-thunk',
                     !DIST && 'remote-redux-devtools',
                     'util',
+                    'fs',
                     ...Object.keys(pkg.dependencies)
                 ],
                 plugins: [
