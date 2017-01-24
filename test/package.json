@@ -11,8 +11,6 @@
     "on": "npm run BUS -- node on.js",
     "off": "npm run BUS -- node off.js",
     "remove": "npm run BUS -- node remove.js",
-    "test": "npm run BUS -- node --harmony-async-await test.js",
-    "scan": "node scan.js",
-    "debug-scan": "node --inspect --debug-brk scan.js"
+    "test": "npm run BUS -- node --harmony-async-await test.js"
   }
 }
