@@ -9,4 +9,3 @@ export const createZWaveStore = zwave => createStore(
     (composeWithDevTools({name: 'ZWave', realtime: true, port: 6400}) || (x => x))
     (applyMiddleware(thunk.withExtraArgument({zwave})))
 )
-
