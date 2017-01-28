@@ -27,18 +27,18 @@ const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
 }
 
 export class ZWave {
-    start ({name, config: {port, devices}}) {
+    start ({name, config: {port}}) {
         Object.assign(this, {name, port})
         return bus.registerObject(name, this)
-            .then(() => {
+            .then(obj => {
                 zwave.connect(this.port)
                 this.store = createZWaveStore(zwave)
                 setStore(this.store)
                 load(this.store.dispatch)
                 this.store.subscribe(dedup(select(this.store.getState))(state =>
-                    bus.signal(`/${this.name}.state`, state)))
+                    obj.signal('state', state)))
                 const register = () => bus.proxy('Device').registerService(this.name)
-                bus.registerListener(`/Device.started`, register)
+                bus.registerListener(`Device.start`, register)
                 bus.on('reconnect', register)
                 register()
             })
