@@ -2,19 +2,6 @@ import {log} from './log'
 import CommandClass from './CommandClass'
 import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET} from './actions'
 
-const valueReducers = {
-    Alarm (state, {class_id, label, value}, device) {
-        if (class_id === CommandClass.Alarm && label === 'Alarm Level'
-            && device.value !== !!value // TODO shallow compare if value is object
-        )
-            return {
-                ...state,
-                devices: {...state.devices, [device.id]: {...device, value: !!value}}
-            }
-        return state
-    }
-}
-
 export default function reducer (state, action) {
     switch (action.type) {
     case NODE_SET:
