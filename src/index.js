@@ -1,4 +1,7 @@
-import {createZWaveStore} from './store'
+import {createStore, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
+import {composeWithDevTools} from 'remote-redux-devtools'
+import reducer from './reducer'
 import zwave, {setStore} from './zwave'
 import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
@@ -32,7 +35,12 @@ export class ZWave {
         return bus.registerObject(name, this)
             .then(obj => {
                 zwave.connect(this.port)
-                this.store = createZWaveStore(zwave)
+                this.store = createStore(
+                    reducer,
+                    {devices: {}},
+                    (composeWithDevTools({name: 'ZWave', realtime: true, port: 6400}) || (x => x))
+                    (applyMiddleware(thunk.withExtraArgument({zwave})))
+                )
                 setStore(this.store)
                 load(this.store.dispatch)
                 this.store.subscribe(dedup(select(this.store.getState))(state =>
