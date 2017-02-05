@@ -42,11 +42,11 @@ export const
 
 import {valueSet, deviceValueSet} from './index'
 export const
-    addValue = (value) => (dispatch, getState, {zwave}) => {
+    addValue = value => (dispatch, getState, {zwave}) => {
         log('valueAdded', value)
         dispatch(valueSet(value))
     },
-    changeValue = (value) => (dispatch, getState, {zwave}) => {
+    changeValue = value => (dispatch, getState, {zwave}) => {
         log('valueChanged', value)
         dispatch(valueSet(value))
         const
@@ -56,9 +56,10 @@ export const
         const
             intf = interfaceOfType(device.type),
             cid = cidOfInterface(intf),
-            index = getCidValueIndex(cid)
-        if (cid === value.class_id && index === value.index && device.value !== value.value)
-            dispatch(deviceValueSet(id, value.value))
+            index = getCidValueIndex(cid),
+            deviceValue = normalizeInterfaceValue(intf, value.value)
+        if (cid === value.class_id && index === value.index && device.value !== deviceValue)
+            dispatch(deviceValueSet(id, deviceValue))
     }
 
 import {nodeinfoSet, deviceSet} from './index'
@@ -113,6 +114,14 @@ const
             cid = cidOfInterface(intf),
             value = getCidValuesValue(cid, values)
         return value && value.value
+    },
+    normalizeInterfaceValue = (intf, value) => {
+        switch (intf) {
+        case Interface.SWITCH_BINARY:
+        case Interface.SENSOR_BINARY:
+            return !!value
+        }
+        return value
     },
     getTypeValuesValue = (type, values) =>
         getInterfaceValuesValue(interfaceOfType(type), values),
