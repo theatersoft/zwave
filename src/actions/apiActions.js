@@ -86,7 +86,7 @@ const
             id = String(id);
             ({name, type} = update({id, name, type}))
             if (!name) name = `ZWave.${id}`
-            const value = getTypeValuesValue(type, values)
+            const value = normalizeInterfaceValue(interfaceOfType(type), getTypeValuesValue(type, values))
             return {name, value, type, id}
         }
     },
