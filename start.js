@@ -6,7 +6,11 @@ const
         export: 'ZWave',
         name: 'ZWave',
         config: {
-            port: '/dev/zwave'
+            port: '/dev/zwave',
+            options: {
+                Logging: true,
+                ConsoleOutput: true
+            }
         }
     },
     service = new (require(options.module)[options.export])()
