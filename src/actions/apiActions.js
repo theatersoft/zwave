@@ -43,11 +43,11 @@ export const
 import {valueSet, deviceValueSet} from './index'
 export const
     addValue = value => (dispatch, getState, {zwave}) => {
-        log('valueAdded', value)
+        //log('valueAdded', value)
         dispatch(valueSet(value))
     },
     changeValue = value => (dispatch, getState, {zwave}) => {
-        log('valueChanged', value)
+        //log('valueChanged', value)
         dispatch(valueSet(value))
         const
             id = String(value.node_id),
