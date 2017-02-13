@@ -2,7 +2,7 @@ import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'remote-redux-devtools'
 import reducer from './reducer'
-import zwave, {setStore} from './zwave'
+import {createZwave, setZwaveStore} from './zwave'
 import bus, {EventEmitter} from '@theatersoft/bus'
 import {log} from './log'
 import {api} from './actions'
@@ -14,12 +14,10 @@ const select = getState => () => {
     const {devices} = getState()
     return {devices}
 }
-//const equal = (a, b) => (a === b)
+
 // selected objects require shallow comparison
 const equal = (a, b, _a = Object.keys(a), _b = Object.keys(b)) => (
-    _a.length === _b.length && !_a.find(k =>
-        !_b.includes(k) || a[k] !== b[k]
-    )
+    _a.length === _b.length && !_a.find(k => !_b.includes(k) || a[k] !== b[k])
 )
 
 const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
@@ -30,18 +28,16 @@ const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
 }
 
 export class ZWave {
-    start ({name, config: {port, remotedev: hostname = 'localhost'}}) {
+    start ({name, config: {port, options, remotedev: hostname = 'localhost'}}) {
         Object.assign(this, {name, port})
         return bus.registerObject(name, this)
             .then(obj => {
-                zwave.connect(this.port)
-                this.store = createStore(
-                    reducer,
-                    {devices: {}},
+                this.zwave = createZwave(options)
+                this.store = createStore(reducer, {devices: {}},
                     (composeWithDevTools({name: 'ZWave', realtime: true, port: 6400, hostname}) || (x => x))
-                    (applyMiddleware(thunk.withExtraArgument({zwave})))
-                )
-                setStore(this.store)
+                    (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave}))))
+                setZwaveStore(this.zwave, this.store)
+                this.zwave.connect(this.port)
                 load(this.store.dispatch)
                 this.store.subscribe(dedup(select(this.store.getState))(state =>
                     obj.signal('state', state)))
@@ -54,7 +50,7 @@ export class ZWave {
 
     stop () {
         return bus.unregisterObject(this.name)
-            .then(() => zwave.disconnect(this.port))
+            .then(() => this.zwave.disconnect(this.port))
     }
 
     dispatch (action) {

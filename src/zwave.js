@@ -4,13 +4,15 @@ import Notification from './Notification'
 import {log} from './log'
 import {nodeSet, readyNode, addValue, changeValue, valueRemoved} from './actions'
 
-const zwave = new OpenZwave({
-    Logging: true,
-    ConsoleOutput: true,
-    SaveConfiguration: true
-})
-export default zwave
-export function setStore ({dispatch}) {
+export function createZwave (config) {
+    return new OpenZwave(Object.assign({
+        Logging: false,
+        ConsoleOutput: false,
+        SaveConfiguration: true
+    }, config))
+}
+
+export function setZwaveStore (zwave, {dispatch}) {
     zwave
         .on('connected', v => log('connected', v))
         .on('driver ready', hid => log(`driver ready`, hid.toString(16)))
