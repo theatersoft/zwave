@@ -13,4 +13,6 @@ export const
     deviceValueSet = (id, value) => ({type: DEVICE_VALUE_SET, id, value})
 
 export * from './apiActions'
-export * from './switchActions'
+
+import {switchActions} from '@theatersoft/device'
+export const {ON, OFF, on, off} = switchActions
