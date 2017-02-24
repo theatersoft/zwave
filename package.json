@@ -1,6 +1,6 @@
 {
   "name": "@theatersoft/zwave",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Bus service module for Z-Wave devices",
   "repository": "theatersoft/zwave",
   "main": "dist/zwave.js",
