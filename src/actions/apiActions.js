@@ -59,7 +59,7 @@ export const
             index = getCidValueIndex(cid),
             deviceValue = normalizeInterfaceValue(intf, value.value)
         if (cid === value.class_id && index === value.index && device.value !== deviceValue)
-            dispatch(deviceValueSet(id, deviceValue))
+            dispatch(timestampMotion(deviceValueSet(id, deviceValue), intf))
     }
 
 import {nodeinfoSet, deviceSet} from './index'
@@ -128,5 +128,7 @@ const
     getCidValueIndex = cid =>
         cid === CommandClass.Alarm ? 1 : 0,
     needsPoll = cid =>
-        (cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch)
+        (cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch),
+    timestampMotion = (action, intf) =>
+        Object.assign(action, intf === Interface.SENSOR_BINARY && {time: Date.now()})
 

@@ -66,10 +66,12 @@ export default function reducer (state, action) {
     case DEVICE_VALUE_SET:
     {
         log(action)
-        const {id, value} = action
+        const
+            {id, value, time} = action,
+            device = state.devices[id]
         return {
             ...state, devices: {
-                ...state.devices, [id]: {...state.devices[id], value}
+                ...state.devices, [id]: time ? {...device, value, time} : {...device, value}
             }
         }
     }
