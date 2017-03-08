@@ -2,6 +2,8 @@
 require('shelljs/make')
 
 const
+    pkg = require('./package.json'),
+    name = pkg.name.startsWith('@theatersoft') && pkg.name.slice(13),
     DIST = process.env.DIST === 'true',
     path = require('path'),
     fs = require('fs'),
@@ -10,8 +12,7 @@ const
     babel = require('rollup-plugin-babel'),
     ignore = require('rollup-plugin-ignore'),
     nodeResolve = require('rollup-plugin-node-resolve'),
-    strip = require('rollup-plugin-strip'),
-    pkg = require('./package.json')
+    strip = require('rollup-plugin-strip')
 
 const targets = {
     node () {
@@ -59,16 +60,14 @@ const targets = {
                     nodeResolve({jsnext: true})
                 ]
             })
-            .then(bundle => {
-                bundle.write({
-                        dest: 'dist/zwave.js',
-                        format: 'cjs',
-                        moduleName: 'zwave',
-                        banner: copyright,
-                        sourceMap: DIST ? false : 'inline'
-                    })
-                    .then(() => console.log('wrote dist/zwave.js'))
-            })
+            .then(bundle => bundle.write({
+                    dest: `dist/${name}.js`,
+                    format: 'cjs',
+                    moduleName: name,
+                    banner: copyright,
+                    sourceMap: DIST ? false : 'inline'
+                }))
+            .then(() => console.log(`wrote dist/${name}.js`))
     },
 
     package () {
