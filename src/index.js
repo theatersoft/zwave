@@ -8,12 +8,7 @@ import {log} from './log'
 import {api} from './actions'
 import {load} from './cache'
 
-// BABEL BUG
-//const select = getState => ({devices, nodes, ...rest} = getState()) => ({devices, ...rest})
-const select = getState => () => {
-    const {devices} = getState()
-    return {devices}
-}
+const select = getState => ({devices, nodes} = getState()) => ({devices})
 
 // selected objects require shallow comparison
 const equal = (a, b, _a = Object.keys(a), _b = Object.keys(b)) => (
