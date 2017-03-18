@@ -1,7 +1,8 @@
 // restore devices from cache before node ready
 // downstream device code must allow undefined values
 import fs from 'fs'
-const filename = `${process.env.HOME}/.config/theatersoft/zwave-cache.json`
+const THEATERSOFT_CONFIG_HOME = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft`
+const filename = `${THEATERSOFT_CONFIG_HOME}/zwave-cache.json`
 const read = () => {try {return JSON.parse(fs.readFileSync(filename, 'utf8'))} catch (e) {}}
 const write = cache => fs.writeFileSync(filename, JSON.stringify(cache), 'utf8')
 let cache
