@@ -10,7 +10,7 @@ export default function reducer (state, action) {
         return {
             ...state, nodes: {
                 ...state.nodes, [nid]: {
-                    //manufacturer, manufacturerid, product, producttype, productid, type, name, loc
+                    ...state.nodes[nid],
                     values: {},
                     ready: false
                 }

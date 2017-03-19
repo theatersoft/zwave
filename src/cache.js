@@ -7,20 +7,24 @@ const read = () => {try {return JSON.parse(fs.readFileSync(filename, 'utf8'))} c
 const write = cache => fs.writeFileSync(filename, JSON.stringify(cache), 'utf8')
 let cache
 
-import {deviceSet, api} from './actions'
+import {deviceSet, nodeinfoSet} from './actions'
 
 export const load = dispatch => {
     cache = read() || {}
-    Object.values(cache).forEach(device =>
-        dispatch(deviceSet(device)))
+    Object.values(cache).forEach(({name, type, id, cid}) => {
+        dispatch(deviceSet({name, type, id}))
+        cid && dispatch(nodeinfoSet(Number(id), {cid}))
+    })
 }
 
-export const update = ({name, type, id}) => {
+export const update = ({name, type, id, cid}) => {
     let device = cache[id] || {name, type, id}
     if (name && name !== device.name)
         device = {...device, name}
     if (type && type !== device.type)
         device = {...device, type}
+    if (cid && cid !== device.cid)
+        device = {...device, cid}
     if (cache[id] !== device) {
         cache[id] = device
         write(cache)

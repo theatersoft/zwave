@@ -66,29 +66,34 @@ import {nodeinfoSet, deviceSet} from './index'
 export const
     readyNode = (nid, nodeinfo) => (dispatch, getState, {zwave}) => {
         log('nodeReady', nid, nodeinfo)
-        dispatch(nodeinfoSet(nid, nodeinfo))
-        const device = deviceOfNode(nid, getState().nodes[nid])
+        const [device, info] = updateNodeDevice(nid, {...getState().nodes[nid], ...nodeinfo})
+        dispatch(nodeinfoSet(nid, info))
         if (device) {
             dispatch(deviceSet(device))
-            const cid = cidOfInterface(interfaceOfType(device.type))
-            if (needsPoll(cid))
+            if (needsPoll(info.cid))
                 zwave.enablePoll(nid, cid)
         }
     }
 
 import {update} from '../cache'
 const
-    deviceOfNode = (id, {product, name, values}) => {
-        let type = typeOfValues(values)
+    updateNodeDevice = (nid, nodeinfo) => {
+        const {product, values} = nodeinfo
+        let device,
+            {name} = nodeinfo,
+            type = typeOfValues(values)
         if (type === Type.SecuritySensor && product && product.includes('Motion'))
             type = Type.MotionSensor
         if (type) {
-            id = String(id);
-            ({name, type} = update({id, name, type}))
+            const id = String(nid);
+            let cid = cidMap(nodeinfo);
+            ({name, type, cid} = update({id, name, type, cid}))
             if (!name) name = `ZWave.${id}`
             const value = normalizeInterfaceValue(interfaceOfType(type), getTypeValuesValue(type, values))
-            return {name, value, type, id}
+            device = {name, value, type, id}
+            nodeinfo = {...nodeinfo, cid}
         }
+        return [device, nodeinfo]
     },
     typeOfValues = values => {
         const map = new Map([
@@ -130,5 +135,7 @@ const
     needsPoll = cid =>
         (cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch),
     timestampMotion = (action, intf) =>
-        Object.assign(action, intf === Interface.SENSOR_BINARY && {time: Date.now()})
-
+        Object.assign(action, intf === Interface.SENSOR_BINARY && {time: Date.now()}),
+    cidMap = ({manufacturerid, producttype, productid}) => ({
+        "014a00010002": CommandClass.BinarySensor // Ecolink Door/Window Sensor http://products.z-wavealliance.org/products/1498
+    }[`${manufacturerid.slice(2)}${producttype.slice(2)}${productid.slice(2)}`])

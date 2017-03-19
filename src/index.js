@@ -28,7 +28,7 @@ export class ZWave {
         return bus.registerObject(name, this)
             .then(obj => {
                 this.zwave = createZwave(options)
-                this.store = createStore(reducer, {devices: {}},
+                this.store = createStore(reducer, {devices: {}, nodes: []},
                     (composeWithDevTools({name: 'ZWave', realtime: true, port: 6400, hostname}) || (x => x))
                     (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave}))))
                 setZwaveStore(this.zwave, this.store)
