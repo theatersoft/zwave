@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Rob Huehn <rob@theatersoft.com>",
   "scripts": {
-    "BUS": "env $(cat ~/.config/theatersoft/.bus | xargs)",
+    "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
     "DEBUG": "npm run BUS -- node --inspect-brk",
     "RUN": "npm run BUS -- node",
     "add": "npm run BUS -- node add.js",
