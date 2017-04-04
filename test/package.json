@@ -6,11 +6,10 @@
     "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
     "DEBUG": "npm run BUS -- node --inspect-brk",
     "RUN": "npm run BUS -- node",
-    "add": "npm run BUS -- node add.js",
-    "healNetwork": "npm run BUS -- node healNetwork.js",
-    "on": "npm run BUS -- node on.js",
-    "off": "npm run BUS -- node off.js",
-    "remove": "npm run BUS -- node remove.js",
-    "test": "npm run BUS -- node test.js"
+    "add": "npm run RUN -- add.js",
+    "cancel": "npm run RUN -- cancel.js",
+    "heal": "npm run RUN -- heal.js",
+    "remove": "npm run RUN -- remove.js",
+    "test": "npm run RUN -- test.js"
   }
 }

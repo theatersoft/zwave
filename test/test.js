@@ -1,8 +1,7 @@
 'use strict'
-const {start, zwave} = require('./zwave')
-start(async () => {
+require('./zwave').start(async zwave => {
     try {
-        const nid = 6
+        const nid = 12
 
         //zwave.writeConfig()
         //console.log('getNeighbors', await zwave.getNeighbors())
@@ -10,7 +9,7 @@ start(async () => {
         //await zwave.getNumGroups(nid) // 1
         //await zwave.getMaxAssociations(nid, 1) // 5
         //await zwave.getAssociations(nid, 1) // [ 1, 255 ]
-        await zwave.removeAssociation(nid, 1, 255)
+        //await zwave.removeAssociation(nid, 1, 255)
 
 //2017-01-19 09:42:21.209 Info, Node007, Association::Remove - Removing node 255 from group 1 of node 7
 //2017-01-19 09:42:21.209 Detail,
@@ -24,20 +23,22 @@ start(async () => {
 
         //await zwave.removeNode()
         //await zwave.addNode(true)
-        //zwave.cancelControllerCommand()
+        zwave.cancelControllerCommand()
 
         //await zwave.setNodeName(3, 'Outdoor switch')
         //await zwave.setNodeName(5, 'Kitchen outlet')
         //await zwave.setNodeName(6, 'Studio door')
         //await zwave.setNodeName(7, 'Kitchen motion')
         //await zwave.setNodeName(8, 'Hallway')
+        //await zwave.setNodeName(11, 'Garage door')
+        //await zwave.setNodeName(12, 'Front door')
 
         //await zwave.healNetwork()
 
         //console.log('getNeighbors', await zwave.getNeighbors())
-        //console.log('refreshNodeInfo', await zwave.refreshNodeInfo(3))
+        //console.log('refreshNodeInfo', await zwave.refreshNodeInfo(nid))
 
-        //zwave.setValue(3, 0x25, 1, 0, false)
+        //zwave.setValue(11, 132, 1, 0, 300)
 
 
         //console.log('isPrimaryController', await zwave.isPrimaryController())
