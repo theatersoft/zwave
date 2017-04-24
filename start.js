@@ -9,7 +9,8 @@ const
             port: '/dev/zwave',
             options: {
                 Logging: true,
-                ConsoleOutput: true
+                ConsoleOutput: true,
+                "SaveLogLevel": 5
             }
         }
     },
