@@ -23,13 +23,13 @@ const dedup = (getState, _state = getState()) => f => (_next = getState()) => {
 }
 
 export class ZWave {
-    start ({name, config: {port, options, remotedev: hostname = 'localhost'}}) {
+    start ({name, config: {port, options, remotedev}}) {
         Object.assign(this, {name, port})
         return bus.registerObject(name, this)
             .then(obj => {
                 this.zwave = createZwave(options)
                 this.store = createStore(reducer, {devices: {}, nodes: []},
-                    (composeWithDevTools({name: 'ZWave', realtime: true, port: 6400, hostname}) || (x => x))
+                    (remotedev && composeWithDevTools({name: 'ZWave', realtime: true, port: 6400, hostname: remotedev}) || (x => x))
                     (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave}))))
                 setZwaveStore(this.zwave, this.store)
                 this.zwave.connect(this.port)
