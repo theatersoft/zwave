@@ -1,6 +1,6 @@
 {
   "name": "@theatersoft/zwave",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Bus service module for Z-Wave devices",
   "repository": "theatersoft/zwave",
   "main": "zwave.js",
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "node build.js && ls -l dist",
     "build:dist": "DIST=true npm run build",
-    "link": "(cd dist; npm link); npm link @theatersoft/zwave @theatersoft/device; cd dist; npm link @theatersoft/bus openzwave-shared",
+    "link": "(cd dist; npm link); npm link @theatersoft/zwave @theatersoft/device; cd dist; npm link @theatersoft/bus",
     "publish": "node build.js publish"
   },
   "distScripts": {
@@ -27,7 +27,7 @@
   "license": "AGPL-3.0",
   "distDependencies": {
     "@theatersoft/bus": "~1",
-    "openzwave-shared": "^1.2.5",
+    "openzwave-shared": "theatersoft/node-openzwave-shared",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "remote-redux-devtools": "^0.5.7"
