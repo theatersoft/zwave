@@ -13,24 +13,27 @@
     "link": "(cd dist; npm link); npm link @theatersoft/zwave @theatersoft/device; cd dist; npm link @theatersoft/bus",
     "publish": "node build.js publish"
   },
-  "distScripts": {
-    "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
-    "DEVBUS": "env $(cat ~/.config/theatersoft/.bus | xargs)",
-    "DEVRUN": "npm run DEVBUS -- node",
-    "RUN": "npm run BUS -- node",
-    "start": "npm run RUN -- start.js",
-    "start:dev": "npm run DEVRUN -- start.js",
-    "debug": "npm run BUS -- node --inspect-brk start.js",
-    "debug:dev": "npm run DEVBUS -- node --inspect-brk start.js"
-  },
   "author": "Rob Huehn <rob@theatersoft.com>",
   "license": "AGPL-3.0",
-  "distDependencies": {
-    "@theatersoft/bus": "~1",
-    "openzwave-shared": "theatersoft/node-openzwave-shared",
-    "redux": "^3.6.0",
-    "redux-thunk": "^2.1.0",
-    "remote-redux-devtools": "^0.5.7"
+  "dist": {
+    "dependencies": {
+      "@theatersoft/bus": "~1",
+      "openzwave-shared": "theatersoft/node-openzwave-shared",
+      "redux": "^3.6.0",
+      "redux-thunk": "^2.1.0",
+      "remote-redux-devtools": "^0.5.7"
+    },
+    "devDependencies": {},
+    "scripts": {
+      "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
+      "DEVBUS": "env $(cat ~/.config/theatersoft/.bus | xargs)",
+      "DEVRUN": "npm run DEVBUS -- node",
+      "RUN": "npm run BUS -- node",
+      "start": "npm run RUN -- start.js",
+      "start:dev": "npm run DEVRUN -- start.js",
+      "debug": "npm run BUS -- node --inspect-brk start.js",
+      "debug:dev": "npm run DEVBUS -- node --inspect-brk start.js"
+    }
   },
   "devDependencies": {
     "@theatersoft/device": "~1",
