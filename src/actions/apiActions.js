@@ -1,6 +1,5 @@
 import CommandClass from '../CommandClass'
-import {Type, Interface, interfaceOfType} from '@theatersoft/device'
-import {ON, OFF} from './index'
+import {Type, Interface, interfaceOfType, ON, OFF} from '@theatersoft/device'
 import {log} from '../log'
 
 export const
