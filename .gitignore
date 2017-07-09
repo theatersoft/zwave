@@ -5,3 +5,4 @@
 /_*
 .idea
 *.log
+/package-lock.json
