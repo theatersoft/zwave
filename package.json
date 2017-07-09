@@ -4,6 +4,7 @@
   "description": "Bus service module for Z-Wave devices",
   "repository": "theatersoft/zwave",
   "main": "zwave.js",
+  "module": "zwave.es.js",
   "engines": {
     "node": ">=7.6.0"
   },
