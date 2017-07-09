@@ -13,9 +13,9 @@ const
 export const AddDevice = connect(mapStateToProps, mapDispatchToProps)(class extends Component {
     state = {add: false}
 
-    onChange = (value, _e) => {
-        this.props.dispatchZWaveApi(value ? {method: 'cancelControllerCommand', args: []} : {method: 'addNode', args: [true]})
-            .then(() => this.setState({sw: value}))
+    onChange = (add, _e) => {
+        this.props.dispatchZWaveApi(add ? {method: 'addNode', args: [true]} : {method: 'cancelControllerCommand', args: []})
+            .then(() => this.setState({add}))
     }
 
     render ({dispatchZWaveApi, devices}, {add}) {
