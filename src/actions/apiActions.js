@@ -1,5 +1,5 @@
 import CommandClass from '../CommandClass'
-import {Type, Interface, interfaceOfType, ON, OFF} from '@theatersoft/device'
+import {Type, Interface, interfaceOfType, switchActions} from '@theatersoft/device'
 import {log} from '../log'
 
 export const
@@ -10,6 +10,7 @@ export const
             return zwave[method](...args)
         }
         const
+            {ON, OFF} = switchActions,
             {id, type} = action,
             device = getState().devices[id]
         if (!device) throw `no device for ${action}`
