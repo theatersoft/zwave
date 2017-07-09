@@ -82,6 +82,7 @@ const targets = {
             entry: 'src/components/index.js',
             external: [
                 'preact',
+                'preact-redux',
                 '@theatersoft/bus',
                 '@theatersoft/components'
             ],
