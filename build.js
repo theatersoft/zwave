@@ -76,7 +76,7 @@ const targets = {
             .then(() => console.log(`wrote dist/${name}.js`))
     },
 
-    async bundle () {
+    async client () {
         console.log('target bundle')
         const bundle = await rollup({
             entry: 'src/components/index.js',
@@ -166,9 +166,19 @@ const targets = {
         exec('npm publish --access=public dist')
     },
 
+    watch () {
+        require('chokidar').watch([`src`, `*.js`])
+            .on('change', async path => {
+                console.log(path)
+                await targets.node()
+                await targets.client()
+                await targets.package()
+            })
+    },
+
     async all () {
         targets.node()
-        await targets.bundle()
+        await targets.client()
         targets.package()
     }
 }
