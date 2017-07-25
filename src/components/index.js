@@ -10,7 +10,7 @@ const
     settingsSet = state => Settings.setState(state)
 
 const
-    mapState = ({settings}) => ({settings}),
+    mapState = p => p,
     mapDispatch = dispatch => ({
         api: async (id, value) => {
             await zwaveApi(id === 'add' && value ? {method: 'addNode', args: [true]}
@@ -55,10 +55,24 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState, m
 })
 
 export const DeviceSettings = (ComposedComponent, props) => connect(mapState, mapDispatch)(class DeviceSettings extends Component {
-    render ({settings, onBack}) {
+    render ({id, devices, settings}) {
+        if (!id) return null
+        const
+            [, service, _id] = /^([^\.]+)\.([^]+)$/.exec(id),
+            device = devices[id],
+            {name, value, type} = device
         return (
             <ComposedComponent {...props}>
-                <Subheader label="ZWave device" onClick={onBack}/>
+                <Subheader label="Service"/>
+                <ListItem label={service}/>
+                <Subheader label="Type"/>
+                <ListItem label={type}/>
+                <Subheader label="ID"/>
+                <ListItem label={_id}/>
+                <Subheader label="Name"/>
+                <ListItem label={name}/>
+                <Subheader label="Value"/>
+                <ListItem label={String(value)}/>
             </ComposedComponent>
         )
     }
