@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {ListItem, Switch} from '@theatersoft/components'
+import {ListItem, Switch, Subheader} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
@@ -49,6 +49,16 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState, m
             <ComposedComponent {...props}>
                 {item('Add device', settings['ZWave.add'], 'add')}
                 {item('Remove device', settings['ZWave.remove'], 'remove')}
+            </ComposedComponent>
+        )
+    }
+})
+
+export const DeviceSettings = (ComposedComponent, props) => connect(mapState, mapDispatch)(class DeviceSettings extends Component {
+    render ({settings, onBack}) {
+        return (
+            <ComposedComponent {...props}>
+                <Subheader label="ZWave device" onClick={onBack}/>
             </ComposedComponent>
         )
     }
