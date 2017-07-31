@@ -4,21 +4,21 @@ import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
 const
-    mapState = p => p,
+    mapState = props => p => ({...p, ...props}),
     mapDispatch = dispatch => ({
         api: async (name, id, value) => {
             const
                 method = id === 'add' && value ? 'addNode' : id === 'remove' && value ? 'removeNode' : 'cancelControllerCommand',
                 args = [method === 'addNode']
             await proxy(name).dispatch({type: 'API', method, args})
-            await proxy('Settings').setState({[`ZWave.${id}`]: value})
+            await proxy('Settings').setState({[`${name}.${id}`]: value})
         }
     })
 
 
-export const ServiceSettings = (ComposedComponent, props) => connect(mapState, mapDispatch)(class ServiceSettings extends Component {
+export const ServiceSettings = (ComposedComponent, props) => connect(mapState(props), mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
-        const {name = 'ZWave', settings, api} = this.props
+        const {name, settings, api} = this.props
         if (settings['${name}.add']) api(name, 'add', false)
         if (settings['${name}.remove']) api(name, 'remove', false)
     }
@@ -26,14 +26,14 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState, m
     onClick = e => {
         const
             {id} = e.currentTarget.dataset,
-            {name = 'ZWave', settings, api} = this.props ,
+            {name, settings, api} = this.props ,
             value = settings[`${name}.${id}`]
         api(name, id, !value)
     }
 
     onChange = (value, e) => this.onClick(e)
 
-    render ({name = 'ZWave', settings}) {
+    render ({name, settings}) {
         const
             item = (label, value, id) =>
                 <ListItem label={label}>
@@ -49,7 +49,7 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState, m
 })
 
 export const DeviceSettings = (ComposedComponent, props) => connect(mapState, mapDispatch)(class DeviceSettings extends Component {
-    render ({id, devices, settings}) {
+    render ({id, devices}) {
         if (!id) return null
         const
             [, service, _id] = /^([^\.]+)\.([^]+)$/.exec(id),
