@@ -4,19 +4,22 @@ import Notification from './Notification'
 import {log} from './log'
 import {nodeSet, readyNode, addValue, changeValue, valueRemoved} from './actions'
 
-export function createZwave (config) {
+let port
+
+export function createZwave ({port: p, options}) {
+    port = p
     return new OpenZwave(Object.assign({
         Logging: false,
         ConsoleOutput: false,
         SaveConfiguration: true
-    }, config))
+    }, options))
 }
 
 export function setZwaveStore (zwave, {dispatch}) {
     zwave
         .on('connected', v => log('connected', v))
         .on('driver ready', hid => log(`driver ready`, hid.toString(16)))
-        .on('driver failed', () => (log('driver failed'), zwave.disconnect()))
+        .on('driver failed', () => (log('driver failed'), zwave.disconnect(port)))
         .on('node added', nid => dispatch(nodeSet(nid)))
         .on('value added', (nid, cid, value) => dispatch(addValue(value)))
         .on('value changed', (nid, cid, value) => dispatch(changeValue(value)))
