@@ -6,12 +6,12 @@ import {connect} from './redux'
 const
     mapState = props => p => ({...p, ...props}),
     mapDispatch = dispatch => ({
-        api: async (name, id, value) => {
+        api: async (id, op, value) => {
             const
-                method = id === 'add' && value ? 'addNode' : id === 'remove' && value ? 'removeNode' : 'cancelControllerCommand',
+                method = op === 'add' && value ? 'addNode' : op === 'remove' && value ? 'removeNode' : 'cancelControllerCommand',
                 args = [method === 'addNode']
-            await proxy(name).dispatch({type: 'API', method, args})
-            await proxy('Settings').setState({[`${name}.${id}`]: value})
+            await proxy(id).dispatch({type: 'API', method, args})
+            await proxy('Settings').setState({[`${id}.${op}`]: value})
         }
     })
 
@@ -36,14 +36,14 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState(pr
     render ({id, settings}) {
         console.log('render', id)
         const
-            item = (label, value, op) =>
+            item = (label, op) =>
                 <ListItem label={label}>
-                    <Switch checked={value} data-op={op} onChange={this.onChange}/>
+                    <Switch checked={settings['${id}.${op}']} data-op={op} onChange={this.onChange}/>
                 </ListItem>
         return (
             <ComposedComponent>
-                {item('Add device', settings['${id}.add'], 'add')}
-                {item('Remove device', settings['${id}.remove'], 'remove')}
+                {item('Add device', 'add')}
+                {item('Remove device', 'remove')}
             </ComposedComponent>
         )
     }
