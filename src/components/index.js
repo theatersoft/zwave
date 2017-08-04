@@ -4,7 +4,7 @@ import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
 const
-    mapState = props => p => ({...p, ...props}),
+    mapState = p => p,
     mapDispatch = dispatch => ({
         api: async (id, op, value) => {
             const
@@ -16,7 +16,7 @@ const
     })
 
 
-export const ServiceSettings = (ComposedComponent, props) => connect(mapState(props), mapDispatch)(class ServiceSettings extends Component {
+export const ServiceSettings = ComposedComponent => connect(mapState, mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
         const {id, settings, api} = this.props
         if (settings['${id}.add']) api(id, 'add', false)
@@ -26,7 +26,7 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState(pr
     onClick = e => {
         const
             {op} = e.currentTarget.dataset,
-            {id, settings, api} = this.props ,
+            {id, settings, api} = this.props,
             value = settings[`${id}.${op}`]
         api(id, op, !value)
     }
@@ -34,11 +34,10 @@ export const ServiceSettings = (ComposedComponent, props) => connect(mapState(pr
     onChange = (value, e) => this.onClick(e)
 
     render ({id, settings}) {
-        console.log('render', id)
         const
             item = (label, op) =>
                 <ListItem label={label}>
-                    <Switch checked={settings['${id}.${op}']} data-op={op} onChange={this.onChange}/>
+                    <Switch checked={settings[`${id}.${op}`]} data-op={op} onChange={this.onChange}/>
                 </ListItem>
         return (
             <ComposedComponent>
