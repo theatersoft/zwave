@@ -52,6 +52,7 @@ export default function reducer (state, action) {
         const {nid, cid, index} = action
         log('value removed', nid, cid, index)
         debugger
+        break
     }
     case DEVICE_SET:
     {

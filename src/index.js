@@ -31,8 +31,10 @@ export class ZWave {
                 this.store = createStore(reducer, {devices: {}, nodes: []},
                     (remotedev && composeWithDevTools({name: 'ZWave', realtime: true, port: 6400, hostname: remotedev}) || (x => x))
                     (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave}))))
-                setZwaveStore(this.zwave, this.store)
-                this.zwave.connect(this.port)
+                if (this.zwave) {
+                    setZwaveStore(this.zwave, this.store)
+                    this.zwave.connect(this.port)
+                }
                 load(this.store.dispatch)
                 this.store.subscribe(dedup(select(this.store.getState))(state =>
                     obj.signal('state', state)))
