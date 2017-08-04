@@ -18,31 +18,32 @@ const
 
 export const ServiceSettings = (ComposedComponent, props) => connect(mapState(props), mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
-        const {name, settings, api} = this.props
-        if (settings['${name}.add']) api(name, 'add', false)
-        if (settings['${name}.remove']) api(name, 'remove', false)
+        const {id, settings, api} = this.props
+        if (settings['${id}.add']) api(id, 'add', false)
+        if (settings['${id}.remove']) api(id, 'remove', false)
     }
 
     onClick = e => {
         const
-            {id} = e.currentTarget.dataset,
-            {name, settings, api} = this.props ,
-            value = settings[`${name}.${id}`]
-        api(name, id, !value)
+            {op} = e.currentTarget.dataset,
+            {id, settings, api} = this.props ,
+            value = settings[`${id}.${op}`]
+        api(id, op, !value)
     }
 
     onChange = (value, e) => this.onClick(e)
 
-    render ({name, settings}) {
+    render ({id, settings}) {
+        console.log('render', id)
         const
-            item = (label, value, id) =>
+            item = (label, value, op) =>
                 <ListItem label={label}>
-                    <Switch checked={value} data-id={id} onChange={this.onChange}/>
+                    <Switch checked={value} data-op={op} onChange={this.onChange}/>
                 </ListItem>
         return (
-            <ComposedComponent {...props}>
-                {item('Add device', settings['${name}.add'], 'add')}
-                {item('Remove device', settings['${name}.remove'], 'remove')}
+            <ComposedComponent>
+                {item('Add device', settings['${id}.add'], 'add')}
+                {item('Remove device', settings['${id}.remove'], 'remove')}
             </ComposedComponent>
         )
     }
