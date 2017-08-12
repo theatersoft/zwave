@@ -6,38 +6,38 @@ import {connect} from './redux'
 const
     mapState = p => p,
     mapDispatch = dispatch => ({
-        api: async (id, op, value) => {
+        api: async (name, op, value) => {
             const
                 method = op === 'add' && value ? 'addNode' : op === 'remove' && value ? 'removeNode' : 'cancelControllerCommand',
                 args = [method === 'addNode']
-            await proxy(id).dispatch({type: 'API', method, args})
-            await proxy('Settings').setState({[`${id}.${op}`]: value})
+            await proxy(name).dispatch({type: 'API', method, args})
+            await proxy('Settings').setState({[`${name}.${op}`]: value})
         }
     })
 
 
 export const ServiceSettings = (Composed, {service: {name}}) => connect(mapState, mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
-        const {id, settings, api} = this.props
-        if (settings['${id}.add']) api(id, 'add', false)
-        if (settings['${id}.remove']) api(id, 'remove', false)
+        const {settings, api} = this.props
+        if (settings['${name}.add']) api(name, 'add', false)
+        if (settings['${name}.remove']) api(name, 'remove', false)
     }
 
     onClick = e => {
         const
             {op} = e.currentTarget.dataset,
-            {id, settings, api} = this.props,
-            value = settings[`${id}.${op}`]
-        api(id, op, !value)
+            {settings, api} = this.props,
+            value = settings[`${name}.${op}`]
+        api(name, op, !value)
     }
 
     onChange = (value, e) => this.onClick(e)
 
-    render ({id, settings}) {
+    render ({settings}) {
         const
             item = (label, op) =>
                 <ListItem label={label}>
-                    <Switch checked={settings[`${id}.${op}`]} data-op={op} onChange={this.onChange}/>
+                    <Switch checked={settings[`${name}.${op}`]} data-op={op} onChange={this.onChange}/>
                 </ListItem>
         return (
             <Composed>
