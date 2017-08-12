@@ -16,7 +16,7 @@ const
     })
 
 
-export const ServiceSettings = ComposedComponent => connect(mapState, mapDispatch)(class ServiceSettings extends Component {
+export const ServiceSettings = (Composed, {service: {name}}) => connect(mapState, mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
         const {id, settings, api} = this.props
         if (settings['${id}.add']) api(id, 'add', false)
@@ -40,15 +40,16 @@ export const ServiceSettings = ComposedComponent => connect(mapState, mapDispatc
                     <Switch checked={settings[`${id}.${op}`]} data-op={op} onChange={this.onChange}/>
                 </ListItem>
         return (
-            <ComposedComponent>
+            <Composed>
+                <Subheader label={`${name} Service Settings`}/>
                 {item('Add device', 'add')}
                 {item('Remove device', 'remove')}
-            </ComposedComponent>
+            </Composed>
         )
     }
 })
 
-export const DeviceSettings = (ComposedComponent, props) => connect(mapState, mapDispatch)(class DeviceSettings extends Component {
+export const DeviceSettings = (Composed, props) => connect(mapState, mapDispatch)(class DeviceSettings extends Component {
     render ({id, devices}) {
         if (!id) return null
         const
@@ -56,7 +57,7 @@ export const DeviceSettings = (ComposedComponent, props) => connect(mapState, ma
             device = devices[id],
             {name, value, type} = device
         return (
-            <ComposedComponent {...props}>
+            <Composed {...props}>
                 <Subheader label="Service"/>
                 <ListItem label={service}/>
                 <Subheader label="Type"/>
@@ -67,7 +68,7 @@ export const DeviceSettings = (ComposedComponent, props) => connect(mapState, ma
                 <ListItem label={name}/>
                 <Subheader label="Value"/>
                 <ListItem label={String(value)}/>
-            </ComposedComponent>
+            </Composed>
         )
     }
 })
