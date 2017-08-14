@@ -1,10 +1,11 @@
 import {h, Component} from 'preact'
-import {ListItem, Switch, Subheader} from '@theatersoft/components'
+import {ListItem, NestedList, Switch, Subheader} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
 const
-    mapState = p => p,
+    selectSettings = ({settings}) => ({settings}),
+    selectDevices = ({devices}) => ({devices}),
     mapDispatch = dispatch => ({
         api: async (name, op, value) => {
             const
@@ -15,8 +16,7 @@ const
         }
     })
 
-
-export const ServiceSettings = (Composed, {service: {name}}) => connect(mapState, mapDispatch)(class ServiceSettings extends Component {
+export const ServiceSettings = (Composed, {service: {name}}) => connect(selectSettings, mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
         const {settings, api} = this.props
         if (settings['${name}.add']) api(name, 'add', false)
@@ -33,15 +33,14 @@ export const ServiceSettings = (Composed, {service: {name}}) => connect(mapState
 
     onChange = (value, e) => this.onClick(e)
 
-    render ({settings}) {
+    render ({settings, api, ...props}) {
         const
             item = (label, op) =>
                 <ListItem label={label}>
                     <Switch checked={settings[`${name}.${op}`]} data-op={op} onChange={this.onChange}/>
                 </ListItem>
         return (
-            <Composed>
-                <Subheader label={`${name} Service Settings`}/>
+            <Composed {...props}>
                 {item('Add device', 'add')}
                 {item('Remove device', 'remove')}
             </Composed>
@@ -49,7 +48,7 @@ export const ServiceSettings = (Composed, {service: {name}}) => connect(mapState
     }
 })
 
-export const DeviceSettings = (Composed, props) => connect(mapState, mapDispatch)(class DeviceSettings extends Component {
+export const DeviceSettings = (Composed, props) => connect(selectDevices, mapDispatch)(class DeviceSettings extends Component {
     render ({id, devices}) {
         if (!id) return null
         const
