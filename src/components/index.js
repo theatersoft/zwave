@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {ListItem, NestedList, Switch, Subheader} from '@theatersoft/components'
+import {ListItem, Switch, Subheader} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
