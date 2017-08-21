@@ -83,7 +83,7 @@ const
         let device,
             {name} = nodeinfo,
             type = typeOfValues(values)
-        if (type === Type.SecuritySensor && product && product.includes('Motion'))
+        if (type === Type.OpenSensor && product && product.includes('Motion'))
             type = Type.MotionSensor
         if (type) {
             const
@@ -102,7 +102,7 @@ const
         const map = new Map([
             [CommandClass.BinarySwitch, Type.Switch],
             [CommandClass.MultilevelSwitch, Type.Dimmer],
-            [CommandClass.Alarm, Type.SecuritySensor]
+            [CommandClass.Alarm, Type.OpenSensor]
         ])
         for (const [cid, type] of map.entries())
             if (getCidValuesValue(cid, values) !== undefined) return type
