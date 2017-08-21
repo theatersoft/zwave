@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {ListItem, Switch, Subheader} from '@theatersoft/components'
+import {ListItem, Switch, Subheader, Button} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
@@ -48,25 +48,26 @@ export const ServiceSettings = (Composed, {service: {name}}) => connect(selectSe
     }
 })
 
-export const DeviceSettings = (Composed, props) => connect(selectDevices, mapDispatch)(class DeviceSettings extends Component {
-    render ({id, devices}) {
-        if (!id) return null
+export const DeviceSettings = (Composed, {service, id, device}) => connect(undefined, mapDispatch)(class DeviceSettings extends Component {
+    state = {associations: []}
+
+    componentDidMount () {
+        proxy(service).dispatch({type: 'API', method: 'getAssociations', args: [id, 1]}).then(associations => this.setState({associations}))
+    }
+
+    clearAssociations = () => {
+        console.log('clearAssociations', id, device)
+    }
+
+    render ({api, ...props}, {associations}) {
         const
-            [, service, _id] = /^([^\.]+)\.([^]+)$/.exec(id),
-            device = devices[id],
             {name, value, type} = device
         return (
             <Composed {...props}>
-                <Subheader label="Service"/>
-                <ListItem label={service}/>
-                <Subheader label="Type"/>
-                <ListItem label={type}/>
-                <Subheader label="ID"/>
-                <ListItem label={_id}/>
-                <Subheader label="Name"/>
-                <ListItem label={name}/>
-                <Subheader label="Value"/>
-                <ListItem label={String(value)}/>
+                <ListItem label="Associations">
+                    <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
+                </ListItem>
+                <ListItem label={JSON.stringify(associations)}/>
             </Composed>
         )
     }
