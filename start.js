@@ -11,7 +11,7 @@ const
             options: {
                 Logging: true,
                 ConsoleOutput: true,
-                "SaveLogLevel": 5
+                "SaveLogLevel": 7
             }
         }
     },
