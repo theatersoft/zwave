@@ -1,17 +1,18 @@
 import {h, Component} from 'preact'
-import {ListItem, Switch, Subheader, Button} from '@theatersoft/components'
+import {ListItem, Switch, Button} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
 const
     selectSettings = ({settings}) => ({settings}),
     selectDevices = ({devices}) => ({devices}),
+    api = (name, method, args) => proxy(name).dispatch({type: 'API', method, args}),
     mapDispatch = dispatch => ({
         api: async (name, op, value) => {
             const
                 method = op === 'add' && value ? 'addNode' : op === 'remove' && value ? 'removeNode' : 'cancelControllerCommand',
                 args = [method === 'addNode']
-            await proxy(name).dispatch({type: 'API', method, args})
+            await api(name, method, args)
             await proxy('Settings').setState({[`${name}.${op}`]: value})
         }
     })
@@ -52,11 +53,15 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
     state = {associations: []}
 
     componentDidMount () {
-        proxy(service).dispatch({type: 'API', method: 'getAssociations', args: [id, 1]}).then(associations => this.setState({associations}))
+        api(service, 'getAssociations', [Number(id), 1]).then(associations => this.setState({associations}))
     }
 
     clearAssociations = () => {
-        console.log('clearAssociations', id, device)
+        const associations = this.state.associations.filter(nid => nid !==1)
+        associations.forEach(async nid => {
+            await api(service, 'removeAssociation', [Number(id), 1, nid]) // TODO handle other groups
+            this.setState({associations: this.state.associations.filter(n => n !== nid)})
+        })
     }
 
     render ({api, ...props}, {associations}) {
