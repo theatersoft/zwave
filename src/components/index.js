@@ -75,7 +75,6 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                     <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
                 </ListItem>
                 <ListItem label={JSON.stringify(associations)}/>
-                <ListItem label="Associations"/>
                 <ListItem label="Polled">
                     {polled !== undefined && <Switch checked={polled}/>}
                 </ListItem>
