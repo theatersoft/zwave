@@ -29,12 +29,10 @@
     "scripts": {
       "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
       "DEVBUS": "env $(cat ~/.config/theatersoft/.bus | xargs)",
-      "DEVRUN": "npm run DEVBUS -- node",
-      "RUN": "npm run BUS -- node",
       "link": "npm link; npm link @theatersoft/bus @theatersoft/zwave",
-      "start": "npm run RUN -- start.js zwave",
-      "start:dev": "npm run DEVRUN -- start.js zwave",
-      "debug": "npm run BUS -- node --inspect-brk start.js zwave",
+      "start": "XDG_CONFIG_HOME=/opt/theatersoft/.config npm run BUS -- node start.js zwave",
+      "start:dev": "npm run DEVBUS -- node start.js zwave",
+      "debug": "XDG_CONFIG_HOME=/opt/theatersoft/.config npm run BUS -- node --inspect-brk start.js zwave",
       "debug:dev": "npm run DEVBUS -- node --inspect-brk start.js zwave"
     }
   },
