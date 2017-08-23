@@ -1,13 +1,19 @@
 import CommandClass from '../CommandClass'
 import {Type, Interface, interfaceOfType, switchActions} from '@theatersoft/device'
 import {log} from '../log'
+import * as settingsApi from './settingsActions'
 
 export const
     API = 'API',
+    SETTINGS = 'SETTINGS',
     api = action => (dispatch, getState, {zwave}) => {
         if (action.type === API) {
             const {method, args} = action
             return zwave[method](...args)
+        }
+        if (action.type === SETTINGS) {
+            const {method} = action
+            return settingsApi[method](action)(dispatch, getState, {zwave})
         }
         const
             {ON, OFF} = switchActions,

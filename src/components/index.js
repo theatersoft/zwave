@@ -6,7 +6,8 @@ import {connect} from './redux'
 const
     selectSettings = ({settings}) => ({settings}),
     selectDevices = ({devices}) => ({devices}),
-    api = (name, method, args) => proxy(name).dispatch({type: 'API', method, args}),
+    api = (name, method, ...args) => proxy(name).dispatch({type: 'API', method, args}),
+    settings = (name, method, ...args) => proxy(name).dispatch({type: 'SETTINGS', method, args}),
     mapDispatch = dispatch => ({
         api: async (name, op, value) => {
             const
@@ -53,7 +54,8 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
     state = {associations: []}
 
     componentDidMount () {
-        api(service, 'getAssociations', [Number(id), 1]).then(associations => this.setState({associations}))
+        api(service, 'getAssociations', Number(id), 1).then(associations => this.setState({associations}))
+        settings(service, 'polled', id).then(polled => this.setState({polled}))
     }
 
     clearAssociations = () => {
@@ -64,7 +66,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
         })
     }
 
-    render ({api, ...props}, {associations}) {
+    render ({api, ...props}, {associations, polled}) {
         const
             {name, value, type} = device
         return (
@@ -73,6 +75,10 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                     <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
                 </ListItem>
                 <ListItem label={JSON.stringify(associations)}/>
+                <ListItem label="Associations"/>
+                <ListItem label="Polled">
+                    {polled !== undefined && <Switch checked={polled}/>}
+                </ListItem>
             </Composed>
         )
     }
