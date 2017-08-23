@@ -1,6 +1,8 @@
 // restore devices from cache before node ready
 // downstream device code must allow undefined values
 import fs from 'fs'
+import {log} from './log'
+
 const THEATERSOFT_CONFIG_HOME = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft`
 const filename = `${THEATERSOFT_CONFIG_HOME}/zwave-cache.json`
 const read = () => {try {return JSON.parse(fs.readFileSync(filename, 'utf8'))} catch (e) {}}
@@ -11,6 +13,7 @@ import {deviceSet, nodeinfoSet} from './actions'
 
 export const load = dispatch => {
     cache = read() || {}
+    if (Object.keys(cache).length) log(`Loaded device cache: ${filename}`)
     Object.values(cache).forEach(({name, type, id, cid}) => {
         dispatch(deviceSet({name, type, id}))
         cid && dispatch(nodeinfoSet(Number(id), {cid}))
