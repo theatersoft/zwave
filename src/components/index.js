@@ -66,6 +66,11 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
         })
     }
 
+    onChangePolled = async polled => {
+        await settings(service, 'setPolled', id, polled)
+        this.setState({polled})
+    }
+
     render ({api, ...props}, {associations, polled}) {
         const
             {name, value, type} = device
@@ -76,7 +81,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                 </ListItem>
                 <ListItem label={JSON.stringify(associations)}/>
                 <ListItem label="Polled">
-                    {polled !== undefined && <Switch checked={polled}/>}
+                    {polled !== undefined && <Switch checked={polled} onChange={this.onChangePolled}/>}
                 </ListItem>
             </Composed>
         )
