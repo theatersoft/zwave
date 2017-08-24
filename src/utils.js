@@ -57,8 +57,6 @@ export const
     },
     getCidValueIndex = cid =>
         cid === CommandClass.Alarm ? 1 : 0,
-    needsPoll = cid => false,
-//(cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch),
     timestampMotion = (action, intf) =>
         Object.assign(action, intf === Interface.SENSOR_BINARY && {time: Date.now()}),
     cidMap = ({manufacturerid, producttype, productid}) => ({

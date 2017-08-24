@@ -75,11 +75,7 @@ export const
         log('nodeReady', nid, nodeinfo)
         const [device, info] = updateNodeDevice(nid, {...getState().nodes[nid], ...nodeinfo})
         dispatch(nodeinfoSet(nid, info))
-        if (device) {
-            dispatch(deviceSet(device))
-            if (needsPoll(info.cid))
-                zwave.enablePoll(nid, info.cid)
-        }
+        if (device) dispatch(deviceSet(device))
     }
 
 import {
@@ -89,7 +85,6 @@ import {
     getCidValuesValue,
     normalizeInterfaceValue,
     getCidValueIndex,
-    needsPoll,
     timestampMotion,
     cidMap
 } from '../utils'
