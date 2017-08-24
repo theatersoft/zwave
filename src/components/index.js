@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {ListItem, Switch, Button} from '@theatersoft/components'
+import {ListItem, Switch, Button, Subheader} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
@@ -55,7 +55,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
 
     componentDidMount () {
         api(service, 'getAssociations', Number(id), 1).then(associations => this.setState({associations}))
-        settings(service, 'polled', id).then(polled => this.setState({polled}))
+        settings(service, 'getState', id).then(state => this.setState(state))
     }
 
     clearAssociations = () => {
@@ -71,18 +71,21 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
         this.setState({polled})
     }
 
-    render ({api, ...props}, {associations, polled}) {
+    render ({api, ...props}, {associations, neighbors, polled}) {
         const
             {name, value, type} = device
         return (
             <Composed {...props}>
-                <ListItem label="Associations">
+                <Subheader label="Associations"/>
+                <ListItem label={JSON.stringify(associations)}>
                     <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
                 </ListItem>
-                <ListItem label={JSON.stringify(associations)}/>
-                <ListItem label="Polled">
+                <Subheader label="Polling"/>
+                <ListItem label="Enabled">
                     {polled !== undefined && <Switch checked={polled} onChange={this.onChangePolled}/>}
                 </ListItem>
+                <Subheader label="Neighbors"/>
+                <ListItem label={JSON.stringify(neighbors)}/>
             </Composed>
         )
     }
