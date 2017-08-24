@@ -17,4 +17,7 @@ export const
         const
             {cid} = getState().nodes[id]
         return zwave[value ? 'enablePoll' : 'disablePoll'](Number(id), cid)
+    },
+    healNode = ({args: [id]}) => (dispatch, getState, {zwave}) => {
+        zwave.healNetworkNode(Number(id))
     }

@@ -66,6 +66,10 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
         })
     }
 
+    healNode = () => {
+        settings(service, 'healNode', id)
+    }
+
     onChangePolled = async polled => {
         await settings(service, 'setPolled', id, polled)
         this.setState({polled})
@@ -86,6 +90,9 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                 </ListItem>
                 <Subheader label="Neighbors"/>
                 <ListItem label={JSON.stringify(neighbors)}/>
+                <ListItem label="Update neighbors">
+                    <Button label="Start" raised accent inverse onClick={this.healNode}/>
+                </ListItem>
             </Composed>
         )
     }
