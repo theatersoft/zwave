@@ -38,6 +38,10 @@ export const
         [Interface.SWITCH_MULTILEVEL]: CommandClass.MultilevelSwitch,
         [Interface.SENSOR_BINARY]: CommandClass.Alarm
     }[intf]),
+    getNodeValue = (id, nodes) => {
+        const {cid, values} = nodes[id]
+        return values[`${id}-${cid}-1-${getCidValueIndex(cid)}`]
+    },
     getCidValuesValue = (cid, values) => {
         const value = Object.values(values)
             .find(v => v.class_id === cid && v.index === getCidValueIndex(cid))

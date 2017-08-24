@@ -1,11 +1,13 @@
 import CommandClass from '../CommandClass'
 import {Type, Interface, interfaceOfType, switchActions} from '@theatersoft/device'
 import {log} from '../log'
-import {getCidValueIndex} from '../utils'
+import {getNodeValue} from '../utils'
 
-export const polled = ({args: [id]}) => (dispatch, getState, {zwave}) => {
-    const
-        {cid, values} = getState().nodes[id],
-        value = values[`${id}-${cid}-1-${getCidValueIndex(cid)}`]
-    return zwave.isPolled(value)
-}
+export const
+    polled = ({args: [id]}) => (dispatch, getState, {zwave}) => {
+        return zwave.isPolled(getNodeValue(id, getState().nodes))
+    },
+    setPolled = ({args: [id, value]}) => (dispatch, getState, {zwave}) => {
+        const {cid} = getState().nodes[id]
+        return zwave[value ? 'enablePoll' : 'disablePoll'](Number(id), cid)
+    }
