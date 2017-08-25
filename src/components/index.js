@@ -75,11 +75,17 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
         this.setState({polled})
     }
 
-    render ({api, ...props}, {associations, neighbors, polled}) {
+    render ({api, ...props}, state) {
         const
-            {name, value, type} = device
+            {name, value, type} = device,
+            {associations, neighbors, polled, manufacturer, product, manufacturerid, productid} = state
         return (
             <Composed {...props}>
+                <Subheader label="Manufacturer"/>
+                <ListItem label={manufacturer}/>
+                <Subheader label="Product"/>
+                <ListItem label={product}/>
+                <ListItem label={`${manufacturerid}:${productid}`}/>
                 <Subheader label="Associations"/>
                 <ListItem label={JSON.stringify(associations)}>
                     <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
