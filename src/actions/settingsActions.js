@@ -7,17 +7,18 @@ export const
     getState = ({args: [id]}) => (dispatch, getState, {zwave}) => {
         const
             {nodes} = getState(),
-            nid = Number(id)
+            {cid, values, ...others} = nodes[id]
         return {
-            neighbors: zwave.getNodeNeighbors(nid),
-            polled: zwave.isPolled(getNodeValue(id, getState().nodes))
+            neighbors: zwave.getNodeNeighbors(id),
+            polled: zwave.isPolled(getNodeValue(id, nodes)),
+            ...others
         }
     },
     setPolled = ({args: [id, value]}) => (dispatch, getState, {zwave}) => {
         const
             {cid} = getState().nodes[id]
-        return zwave[value ? 'enablePoll' : 'disablePoll'](Number(id), cid)
+        return zwave[value ? 'enablePoll' : 'disablePoll'](id, cid)
     },
     healNode = ({args: [id]}) => (dispatch, getState, {zwave}) => {
-        zwave.healNetworkNode(Number(id))
+        zwave.healNetworkNode(id)
     }
