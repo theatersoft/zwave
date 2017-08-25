@@ -61,7 +61,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
     clearAssociations = () => {
         const associations = this.state.associations.filter(nid => nid !==1)
         associations.forEach(async nid => {
-            await api(service, 'removeAssociation', [Number(id), 1, nid]) // TODO handle other groups
+            await api(service, 'removeAssociation', Number(id), 1, nid) // TODO handle other groups
             this.setState({associations: this.state.associations.filter(n => n !== nid)})
         })
     }
