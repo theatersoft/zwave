@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {ListItem, Switch, Button, Subheader} from '@theatersoft/components'
+import {ListItem, Switch, Button, Subheader, NestedList} from '@theatersoft/components'
 import {proxy} from '@theatersoft/bus'
 import {connect} from './redux'
 
@@ -59,7 +59,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
     }
 
     clearAssociations = () => {
-        const associations = this.state.associations.filter(nid => nid !==1)
+        const associations = this.state.associations.filter(nid => nid !== 1)
         associations.forEach(async nid => {
             await api(service, 'removeAssociation', Number(id), 1, nid) // TODO handle other groups
             this.setState({associations: this.state.associations.filter(n => n !== nid)})
@@ -87,18 +87,21 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                 <ListItem label={product}/>
                 <ListItem label={`${manufacturerid}:${productid}`}/>
                 <Subheader label="Associations"/>
-                <ListItem label={JSON.stringify(associations)}>
-                    <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
-                </ListItem>
+                <NestedList label={JSON.stringify(associations)}>
+                    <ListItem label="Remove all">
+                        <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
+                    </ListItem>
+                </NestedList>
                 <Subheader label="Polling"/>
                 <ListItem label="Enabled">
                     {polled !== undefined && <Switch checked={polled} onChange={this.onChangePolled}/>}
                 </ListItem>
                 <Subheader label="Neighbors"/>
-                <ListItem label={JSON.stringify(neighbors)}/>
-                <ListItem label="Update neighbors">
-                    <Button label="Start" raised accent inverse onClick={this.healNode}/>
-                </ListItem>
+                <NestedList label={JSON.stringify(neighbors)}>
+                    <ListItem label="Rediscover">
+                        <Button label="Start" raised accent inverse onClick={this.healNode}/>
+                    </ListItem>
+                </NestedList>
             </Composed>
         )
     }
