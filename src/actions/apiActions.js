@@ -1,7 +1,11 @@
 import CommandClass from '../CommandClass'
-import {Interface, interfaceOfType, switchActions} from '@theatersoft/device'
+import {Interface, interfaceOfType, switchActions, dimmerActions} from '@theatersoft/device'
 import {log} from '../log'
 import * as settingsApi from './settingsActions'
+
+const
+    {ON, OFF} = switchActions,
+    {SET} = dimmerActions
 
 export const
     API = 'API',
@@ -16,7 +20,6 @@ export const
             return settingsApi[method](action)(dispatch, getState, {zwave})
         }
         const
-            {ON, OFF} = switchActions,
             {id, type} = action,
             device = getState().devices[id]
         if (!device) throw `no device for ${action}`
@@ -35,12 +38,12 @@ export const
         }
         case Interface.SWITCH_MULTILEVEL:
         {
-            switch (type) {
-            case ON:
-            case OFF:
-                zwave.setValue(Number(id), CommandClass.MultilevelSwitch, 1, 0, action.type === ON ? 255 : 0)
-                return
-            }
+            const value = type === SET ? action.value
+                : type === ON ? 255
+                : type === OFF ? 0
+                : undefined
+            if (value !== undefined)
+                zwave.setValue(Number(id), CommandClass.MultilevelSwitch, 1, 0, value)
             return
         }
         }
