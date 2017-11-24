@@ -18,7 +18,7 @@ const
         }
     })
 
-export const ServiceSettings = (Composed, {service: {name}}) => connect(selectSettings, mapDispatch)(class ServiceSettings extends Component {
+export const ServiceSettings = (Composed, {service: {id: name}}) => connect(selectSettings, mapDispatch)(class ServiceSettings extends Component {
     componentWillUnmount () {
         const {settings, api} = this.props
         if (settings['${name}.add']) api(name, 'add', false)
