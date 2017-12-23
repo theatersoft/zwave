@@ -8,11 +8,13 @@ let port
 
 export function createZwave ({port: p, options}) {
     port = p
-    return new OpenZwave(Object.assign({
+    return new OpenZwave({
         Logging: false,
         ConsoleOutput: false,
-        SaveConfiguration: true
-    }, options))
+        SaveConfiguration: true,
+        UserPath: '/opt/theatersoft/.config',
+        ...options
+    })
 }
 
 export function setZwaveStore (zwave, {dispatch}) {
