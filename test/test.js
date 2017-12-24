@@ -3,7 +3,7 @@ require('./zwave').start(async zwave => {
     try {
         const nid = 12
 
-        //zwave.writeConfig()
+        zwave.writeConfig()
         //console.log('getNeighbors', await zwave.getNeighbors())
 
         //await zwave.getNumGroups(nid) // 1
@@ -23,7 +23,7 @@ require('./zwave').start(async zwave => {
 
         //await zwave.removeNode()
         //await zwave.addNode(true)
-        zwave.cancelControllerCommand()
+        //zwave.cancelControllerCommand()
 
         //await zwave.setNodeName(3, 'Outdoor switch')
         //await zwave.setNodeName(5, 'Kitchen outlet')
