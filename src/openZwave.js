@@ -1,26 +1,19 @@
-import fs from 'fs'
 import OpenZwave from 'openzwave-shared'
 import CommandClass from './CommandClass'
 import Notification from './Notification'
 import {log} from './log'
 import {nodeSet, readyNode, addValue, changeValue, valueRemoved} from './actions'
+import {ZWave} from './ZWave'
 
-const THEATERSOFT_CONFIG_HOME = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft`
 let port
 
-export function createZwave ({name, port: p, options}) {
+export function createZwave ({port: p, options}) {
     port = p
-    const UserPath = `${THEATERSOFT_CONFIG_HOME}/${name}`
-    try {
-        fs.statSync(UserPath)
-    } catch (e) {
-        fs.mkdirSync(UserPath)
-    }
     return new OpenZwave({
         Logging: false,
         ConsoleOutput: false,
         SaveConfiguration: true,
-        UserPath,
+        UserPath: ZWave.configDir,
         ...options
     })
 }
