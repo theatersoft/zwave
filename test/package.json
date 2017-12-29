@@ -6,10 +6,12 @@
     "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
     "DEBUG": "npm run BUS -- node --inspect-brk",
     "RUN": "npm run BUS -- node",
+    "link": "npm link --no-package-lock @theatersoft/zwave",
     "add": "npm run RUN -- add.js",
     "cancel": "npm run RUN -- cancel.js",
     "heal": "npm run RUN -- heal.js",
     "remove": "npm run RUN -- remove.js",
-    "test": "npm run RUN -- test.js"
+    "test": "npm run RUN -- test.js",
+    "devices": "npm run RUN -- devices.js"
   }
 }
