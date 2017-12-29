@@ -1,7 +1,7 @@
 'use strict'
 const
     {bus, log} = require('@theatersoft/bus'),
-    {CommandClass} = require('@theatersoft/zwave'),
+    {CommandClass, getCidValuesValue} = require('@theatersoft/zwave'),
     zwave = bus.proxy('ZWave'),
     toJson = o => JSON.stringify(o, null, ' '),
     columnify = (...cols) => (...strs) => strs.reduce((s, str, i) => s + (String(str) || '').slice(0, cols[i] && (cols[i] - 1)).padEnd(cols[i]), ''),
@@ -54,6 +54,23 @@ bus.start().then(async () => {
         logCid(48)
         logCid(49)
         logCid(113)
+
+        const logCidValues = cid => {
+            log(`${cid}`)
+            matchCid(cid).forEach(({nid, values}) => log(`${nid}:`, getCidValuesValue(cid, values)))
+        }
+
+        log()
+        logCidValues(113)
+
+        log()
+        logCidValues(48)
+
+        log('')
+        all.map(({nid, values}) => values[`${nid}-113-1-10`])
+            .filter(v => v)
+            .forEach(v => log(v.node_id, v.value))
+
     }
     catch (e) {console.log(e)}
 })
