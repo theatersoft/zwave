@@ -46,6 +46,14 @@ bus.start().then(async () => {
         log()
         const cids = alarms.reduce((cids, n) => (Object.keys(n.cids).forEach(cid => cids[cid] = true), cids), {})
         Object.keys(cids).forEach(cid => log(cid, inverseCC[cid]))
+
+        const matchCid = cid => all.filter(({values}) => Object.values(values).find(({class_id}) => class_id === cid))
+        const logCid = cid => log(`${cid}:`, matchCid(cid).map(({nid}) => nid).toString())
+
+        log()
+        logCid(48)
+        logCid(49)
+        logCid(113)
     }
     catch (e) {console.log(e)}
 })
