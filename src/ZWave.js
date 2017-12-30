@@ -1,4 +1,3 @@
-import fs from 'fs'
 import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'remote-redux-devtools'
@@ -8,6 +7,7 @@ import {bus} from '@theatersoft/bus'
 import {log} from './log'
 import {api} from './actions'
 import {load} from './cache'
+import {mkdirpSync} from './utils'
 
 const select = getState => ({devices, nodes} = getState()) => ({devices})
 
@@ -29,11 +29,7 @@ export class ZWave {
     start ({name, config: {port, options, remotedev}}) {
         Object.assign(this, {name, port})
         ZWave.configDir = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft/${name}`
-        try {
-            fs.statSync(ZWave.configDir)
-        } catch (e) {
-            fs.mkdirSync(ZWave.configDir)
-        }
+        mkdirpSync(ZWave.configDir)
         return bus.registerObject(name, this)
             .then(obj => {
                 this.zwave = createZwave({port, options})

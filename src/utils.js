@@ -62,3 +62,12 @@ export const
     cidMap = ({manufacturerid, producttype, productid}) => ({
         "014a00010002": CommandClass.BinarySensor // Ecolink Door/Window Sensor http://products.z-wavealliance.org/products/1498
     }[`${manufacturerid.slice(2)}${producttype.slice(2)}${productid.slice(2)}`])
+
+import fs from 'fs'
+export const mkdirpSync = path => {
+    try {
+        fs.statSync(path)
+    } catch (e) {
+        fs.mkdirSync(path)
+    }
+}
