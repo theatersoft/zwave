@@ -25,6 +25,10 @@ export const ServiceSettings = (Composed, {service: {id: name}}) => connect(sele
         if (settings['${name}.remove']) api(name, 'remove', false)
     }
 
+    writeConfig = () => {
+        api(name, 'writeConfig')
+    }
+
     onClick = e => {
         const
             {op} = e.currentTarget.dataset,
@@ -45,6 +49,9 @@ export const ServiceSettings = (Composed, {service: {id: name}}) => connect(sele
             <Composed {...props}>
                 {item('Add device', 'add')}
                 {item('Remove device', 'remove')}
+                <ListItem label="OZW cache">
+                    <Button label="Write" raised accent inverse onClick={this.writeConfig}/>
+                </ListItem>
             </Composed>
         )
     }
