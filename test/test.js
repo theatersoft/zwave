@@ -1,9 +1,20 @@
 'use strict'
+process.on('unhandledRejection', e => console.log(e))
 require('./zwave').start(async zwave => {
     try {
-        const nid = 12
+        //const nid = 15
+        const nid = 26
 
-        zwave.writeConfig()
+        //zwave.sendNodeInformation(nid)
+
+        //await wave.requestNodeNeighborUpdate(nid)
+
+        //await zwave.setValue(nid, 132, 1, 0, 600)
+        //await zwave.refreshNodeInfo(nid)
+
+        await zwave.requestAllConfigParams(nid)
+
+        //zwave.writeConfig()
         //console.log('getNeighbors', await zwave.getNeighbors())
 
         //await zwave.getNumGroups(nid) // 1
@@ -33,10 +44,10 @@ require('./zwave').start(async zwave => {
         //await zwave.setNodeName(11, 'Garage door')
         //await zwave.setNodeName(12, 'Front door')
 
+        //await zwave.healNetworkNode(nid)
         //await zwave.healNetwork()
 
         //console.log('getNeighbors', await zwave.getNeighbors())
-        //console.log('refreshNodeInfo', await zwave.refreshNodeInfo(nid))
 
         //zwave.setValue(11, 132, 1, 0, 300)
 
