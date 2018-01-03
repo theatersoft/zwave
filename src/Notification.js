@@ -1,4 +1,4 @@
-const Notification = {
+const NotificationCode = {
     MsgComplete: 0,
     Timeout: 1,
     NoOperation: 2,
@@ -7,4 +7,4 @@ const Notification = {
     Dead: 5,
     Alive: 6
 }
-export default Notification
+export default NotificationCode
