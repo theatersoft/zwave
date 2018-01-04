@@ -1,10 +1,10 @@
 require('@theatersoft/server/lib').startLocalService({
     module: '@theatersoft/zwave',
     export: 'ZWave',
-    name: 'ZWave',
+    name: process.argv[3] || 'ZWave',
     config: {
         remotedev: 'localhost',
-        port: '/dev/zwave',
+        port: process.argv[2] || '/dev/zwave',
         options: {
             Logging: true,
             ConsoleOutput: true,
