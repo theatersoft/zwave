@@ -61,7 +61,7 @@ export const
         Object.assign(action, intf === Interface.SENSOR_BINARY && {time: Date.now()}),
     cidMap = ({manufacturerid, producttype, productid}) => ({
         "014a00010002": CommandClass.BinarySensor, // Ecolink Door/Window Sensor http://products.z-wavealliance.org/products/1498
-        "025800831083": CommandClass.BinarySensor // Coolcam NAS-PD01ZE Motion Sensor (PIR) http://products.z-wavealliance.org/ProductManual/File?folder=&filename=Manuals/1920/Motion%20Detector%20User%20Guide%20EU%20V3.3.pdf
+        "025800030083": CommandClass.BinarySensor // Coolcam NAS-PD01ZE Motion Sensor (PIR) http://products.z-wavealliance.org/ProductManual/File?folder=&filename=Manuals/1920/Motion%20Detector%20User%20Guide%20EU%20V3.3.pdf
     }[`${manufacturerid.slice(2)}${producttype.slice(2)}${productid.slice(2)}`])
 
 import fs from 'fs'
