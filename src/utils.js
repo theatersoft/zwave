@@ -4,7 +4,10 @@ import {Type, Interface, interfaceOfType} from '@theatersoft/device'
 import {update} from './cache'
 
 export const
-    valueFilter = ({value_id: vid, node_id: nid, class_id: cid, ...rest}) => ([nid, vid, cid, rest]),
+    vidOfIndexInstance = (index, instance = 1) =>
+        instance === 1 ? `${index}` : `${index}-${instance}`,
+    valueFilter = ({value_id: _vid, node_id: nid, class_id: cid, ...rest}) =>
+        ([nid, vidOfIndexInstance(rest.index, rest.instance), cid, rest]),
     updateNodeDevice = (nid, nodeinfo) => {
         const {product, values} = nodeinfo
         let device,
@@ -41,7 +44,7 @@ export const
     }[intf]),
     getNodeValue = (id, nodes) => {
         const {cid, values} = nodes[id]
-        return values[`${id}-${cid}-1-${getCidValueIndex(cid)}`]
+        return values[cid][vidOfIndexInstance(getCidValueIndex(cid))]
     },
     getCidValuesValue = (cid, values) => {
         const value = Object.values(values[cid] || {})
