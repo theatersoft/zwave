@@ -1,9 +1,10 @@
 import CommandClass from './CommandClass'
 import {Type, Interface, interfaceOfType} from '@theatersoft/device'
-import {log} from './log'
+// import {log} from './log'
 import {update} from './cache'
 
 export const
+    valueFilter = ({value_id: vid, node_id: nid, class_id: cid, ...rest}) => ([nid, vid, cid, rest]),
     updateNodeDevice = (nid, nodeinfo) => {
         const {product, values} = nodeinfo
         let device,
@@ -43,8 +44,8 @@ export const
         return values[`${id}-${cid}-1-${getCidValueIndex(cid)}`]
     },
     getCidValuesValue = (cid, values) => {
-        const value = Object.values(values)
-            .find(v => v.class_id === cid && v.index === getCidValueIndex(cid))
+        const value = Object.values(values[cid] || {})
+            .find(v => v.index === getCidValueIndex(cid))
         return value && value.value
     },
     normalizeInterfaceValue = (intf, value) => {
@@ -65,6 +66,7 @@ export const
     }[`${manufacturerid.slice(2)}${producttype.slice(2)}${productid.slice(2)}`])
 
 import fs from 'fs'
+
 export const mkdirpSync = path => {
     try {
         fs.statSync(path)

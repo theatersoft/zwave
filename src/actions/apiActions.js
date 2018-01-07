@@ -50,26 +50,28 @@ export const
     }
 
 import {valueSet, deviceValueSet} from './index'
+import {valueFilter} from '../utils'
+
 export const
     addValue = value => (dispatch, getState, {zwave}) => {
         dispatch(valueSet(value))
     },
-    changeValue = value => (dispatch, getState, {zwave}) => {
+    changeValue = _value => (dispatch, getState, {zwave}) => {
         const
             state = getState(),
-            {node_id, value_id} = value,
-            node = state.nodes[node_id]
-        if (node.values[value_id].value === value.value) return
-        dispatch(valueSet(value))
-        const device = state.devices[node_id]
+            [nid, vid, _cid, value] = valueFilter(_value),
+            node = state.nodes[nid]
+        if (node.values[_cid][vid].value === value.value) return
+        dispatch(valueSet(_value)) //TODO
+        const device = state.devices[nid]
         if (!device) return
         const
             intf = interfaceOfType(device.type),
             cid = node.cid || cidOfInterface(intf), /// ???
             index = getCidValueIndex(cid),
             deviceValue = normalizeInterfaceValue(intf, value.value)
-        if (cid === value.class_id && index === value.index && device.value !== deviceValue)
-            dispatch(timestampMotion(deviceValueSet(node_id, deviceValue), intf))
+        if (cid === _cid && index === value.index && device.value !== deviceValue)
+            dispatch(timestampMotion(deviceValueSet(nid, deviceValue), intf))
     }
 
 import {nodeinfoSet, deviceSet} from './index'

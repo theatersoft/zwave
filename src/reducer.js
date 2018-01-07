@@ -1,7 +1,6 @@
 import {log} from './log'
 import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET} from './actions'
-
-const valueFilter = ({value_id: vid, node_id: nid, class_id, ...rest}) => ([nid, vid, {class_id, ...rest}])
+import {valueFilter} from './utils'
 
 export default function reducer (state, action) {
     switch (action.type) {
@@ -31,14 +30,16 @@ export default function reducer (state, action) {
     }
     case VALUE_SET: {
         const
-            [nid, vid, value] = valueFilter(action.value),
+            [nid, vid, cid, value] = valueFilter(action.value),
             node = state.nodes[nid]
         if (!node) break
         return {
             ...state, nodes: {
                 ...state.nodes, [nid]: {
                     ...node, values: {
-                        ...node.values, [vid]: value
+                        ...node.values, [cid]: {
+                            ...node.values[cid], [vid]: value
+                        }
                     }
                 }
             }
