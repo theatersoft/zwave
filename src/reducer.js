@@ -1,11 +1,11 @@
 import {log} from './log'
-import CommandClass from './CommandClass'
 import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET} from './actions'
+
+const valueFilter = ({value_id: vid, node_id: nid, class_id, ...rest}) => ([nid, vid, {class_id, ...rest}])
 
 export default function reducer (state, action) {
     switch (action.type) {
-    case NODE_SET:
-    {
+    case NODE_SET: {
         const {nid} = action
         return {
             ...state, nodes: {
@@ -17,8 +17,7 @@ export default function reducer (state, action) {
             }
         }
     }
-    case NODEINFO_SET:
-    {
+    case NODEINFO_SET: {
         const {nid, nodeinfo} = action
         return {
             ...state, nodes: {
@@ -30,32 +29,28 @@ export default function reducer (state, action) {
             }
         }
     }
-    case VALUE_SET:
-    {
+    case VALUE_SET: {
         const
-            {value} = action,
-            {node_id, value_id} = value,
-            node = state.nodes[node_id]
+            [nid, vid, value] = valueFilter(action.value),
+            node = state.nodes[nid]
         if (!node) break
         return {
             ...state, nodes: {
-                ...state.nodes, [node_id]: {
+                ...state.nodes, [nid]: {
                     ...node, values: {
-                        ...node.values, [value_id]: value
+                        ...node.values, [vid]: value
                     }
                 }
             }
         }
     }
-    case VALUE_REMOVED:
-    {
+    case VALUE_REMOVED: {
         const {nid, cid, index} = action
         log('value removed', nid, cid, index)
         debugger
         break
     }
-    case DEVICE_SET:
-    {
+    case DEVICE_SET: {
         log(action)
         const {device} = action
         return {
@@ -64,8 +59,7 @@ export default function reducer (state, action) {
             }
         }
     }
-    case DEVICE_VALUE_SET:
-    {
+    case DEVICE_VALUE_SET: {
         log(action)
         const
             {id, value, time} = action,
