@@ -12,6 +12,7 @@
     "heal": "npm run RUN -- heal.js",
     "remove": "npm run RUN -- remove.js",
     "test": "npm run RUN -- test.js",
-    "devices": "npm run RUN -- devices.js"
+    "devices": "npm run RUN -- devices.js",
+    "debug:devices": "npm run DEBUG -- devices.js"
   }
 }
