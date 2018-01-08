@@ -8,7 +8,7 @@ require('@theatersoft/server/lib').startLocalService({
         options: {
             Logging: true,
             ConsoleOutput: true,
-            "SaveLogLevel": 7
+            SaveLogLevel: 7
         }
     }
 })

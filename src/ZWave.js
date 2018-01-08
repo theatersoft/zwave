@@ -34,7 +34,7 @@ export class ZWave {
             .then(obj => {
                 this.zwave = createZwave({port, options})
                 this.store = createStore(reducer, {devices: {}, nodes: []},
-                    (remotedev && composeWithDevTools({name, realtime: true, port: 6400, hostname: remotedev}) || (x => x))
+                    (remotedev && composeWithDevTools({name, realtime: true, port: 6400, hostname: remotedev, maxAge: 200}) || (x => x))
                     (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave}))))
                 if (this.zwave) {
                     setZwaveStore(this.zwave, this.store)
