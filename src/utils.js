@@ -6,8 +6,10 @@ import {update} from './cache'
 export const
     vidOfIndexInstance = (index, instance = 1) =>
         instance === 1 ? `${index}` : `${index}-${instance}`,
-    valueFilter = ({value_id: _vid, node_id: nid, class_id: cid, ...rest}) =>
+    fromOzwValue = ({value_id: _vid, node_id: nid, class_id: cid, ...rest}) =>
         ([nid, vidOfIndexInstance(rest.index, rest.instance), cid, rest]),
+    toOzwValue = ({nid: node_id, cid: class_id, ...rest}) =>
+        ({node_id, class_id, ...rest}),
     updateNodeDevice = (nid, nodeinfo) => {
         const {product, values} = nodeinfo
         let device,
@@ -42,9 +44,15 @@ export const
         [Interface.SWITCH_MULTILEVEL]: CommandClass.MultilevelSwitch,
         [Interface.SENSOR_BINARY]: CommandClass.Alarm
     }[intf]),
-    getNodeValue = (id, nodes) => {
-        const {cid, values} = nodes[id]
+    getNodeValue = (nid, nodes) => {
+        const {cid, values} = nodes[nid]
         return values[cid][vidOfIndexInstance(getCidValueIndex(cid))]
+    },
+    getNodeOzwValue = (nid, nodes) => {
+        const
+            {cid} = nodes[nid],
+            {index, instance = 1} = getCidValueIndex(cid)
+        return {node_id: nid, class_id: cid, index, instance}
     },
     getCidValuesValue = (cid, values) => {
         const value = Object.values(values[cid] || {})

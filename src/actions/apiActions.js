@@ -26,8 +26,7 @@ export const
         const
             intf = interfaceOfType(device.type)
         switch (intf) {
-        case Interface.SWITCH_BINARY:
-        {
+        case Interface.SWITCH_BINARY: {
             switch (type) {
             case ON:
             case OFF:
@@ -36,12 +35,11 @@ export const
             }
             return
         }
-        case Interface.SWITCH_MULTILEVEL:
-        {
+        case Interface.SWITCH_MULTILEVEL: {
             const value = type === SET ? action.value
                 : type === ON ? 255
-                : type === OFF ? 0
-                : undefined
+                    : type === OFF ? 0
+                        : undefined
             if (value !== undefined)
                 zwave.setValue(Number(id), CommandClass.MultilevelSwitch, 1, 0, value)
             return
@@ -50,7 +48,7 @@ export const
     }
 
 import {valueSet, deviceValueSet} from './index'
-import {valueFilter} from '../utils'
+import {fromOzwValue} from '../utils'
 
 export const
     addValue = value => (dispatch, getState, {zwave}) => {
@@ -59,7 +57,7 @@ export const
     changeValue = _value => (dispatch, getState, {zwave}) => {
         const
             state = getState(),
-            [nid, vid, _cid, value] = valueFilter(_value),
+            [nid, vid, _cid, value] = fromOzwValue(_value),
             node = state.nodes[nid]
         if (node.values[_cid][vid].value === value.value) return
         dispatch(valueSet(_value)) //TODO
@@ -75,6 +73,7 @@ export const
     }
 
 import {nodeinfoSet, deviceSet} from './index'
+
 export const
     readyNode = (nid, nodeinfo) => (dispatch, getState, {zwave}) => {
         log('nodeReady', nid, nodeinfo)

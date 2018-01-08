@@ -1,7 +1,5 @@
-import CommandClass from '../CommandClass'
 import {Type, Interface, interfaceOfType, switchActions} from '@theatersoft/device'
-import {log} from '../log'
-import {getNodeValue} from '../utils'
+import {getNodeOzwValue} from '../utils'
 
 export const
     getState = ({args: [id]}) => (dispatch, getState, {zwave}) => {
@@ -10,14 +8,15 @@ export const
             {cid, values, ...others} = nodes[id]
         return {
             neighbors: zwave.getNodeNeighbors(id),
-            polled: zwave.isPolled(getNodeValue(id, nodes)),
+            polled: zwave.isPolled(getNodeOzwValue(id, nodes)),
             ...others
         }
     },
     setPolled = ({args: [id, value]}) => (dispatch, getState, {zwave}) => {
         const
-            {cid} = getState().nodes[id]
-        return zwave[value ? 'enablePoll' : 'disablePoll'](id, cid)
+            {nodes} = getState(),
+            v = getNodeOzwValue(id, nodes)
+        return value ? zwave.enablePoll(v, 1) : zwave.disablePoll(v)
     },
     healNode = ({args: [id]}) => (dispatch, getState, {zwave}) => {
         zwave.healNetworkNode(id)

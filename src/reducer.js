@@ -1,6 +1,6 @@
 import {log} from './log'
 import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET} from './actions'
-import {valueFilter} from './utils'
+import {fromOzwValue} from './utils'
 
 export default function reducer (state, action) {
     switch (action.type) {
@@ -30,7 +30,7 @@ export default function reducer (state, action) {
     }
     case VALUE_SET: {
         const
-            [nid, vid, cid, value] = valueFilter(action.value),
+            [nid, vid, cid, value] = fromOzwValue(action.value),
             node = state.nodes[nid]
         if (!node) break
         return {
