@@ -1,20 +1,36 @@
 import {Interface, interfaceOfType, switchActions, dimmerActions} from '@theatersoft/device'
-import {valueSet, deviceValueSet} from './index'
+import CommandClass from '../CommandClass'
+import {valueSet, deviceValueSet, zwaveValueSet} from './index'
 import {fromOzwValue} from '../utils'
 import {
-    updateNodeDevice,
     typeOfValues,
     cidOfInterface,
     getCidValuesValue,
     normalizeInterfaceValue,
     getCidValueIndex,
     timestampMotion,
-    cidMap
 } from '../utils'
+
+const
+    zwaveValue = {
+        [CommandClass.Battery]: // 128
+            ({value}) => ({
+                battery: value
+            }),
+        [CommandClass.WakeUp]: // 132
+            ({value, index}) => ({
+                wake: {
+                    [{0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]]: value
+                }
+            })
+    }
 
 export const
     addValue = value => (dispatch, getState, {zwave}) => {
         dispatch(valueSet(value))
+        const {class_id: cid, node_id: nid} = value
+        if (zwaveValue[cid])
+            dispatch(zwaveValueSet(nid, zwaveValue[cid](value)))
     },
     changeValue = _value => (dispatch, getState, {zwave}) => {
         const
@@ -24,7 +40,12 @@ export const
         if (node.values[_cid][vid].value === value.value) return
         dispatch(valueSet(_value)) //TODO
         const device = state.devices[nid]
+
+        if (zwaveValue[_cid])
+            dispatch(zwaveValueSet(nid, zwaveValue[_cid](value)))
+
         if (!device) return
+
         const
             intf = interfaceOfType(device.type),
             cid = node.cid || cidOfInterface(intf), /// ???
