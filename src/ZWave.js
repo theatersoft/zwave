@@ -33,7 +33,7 @@ export class ZWave {
         return bus.registerObject(name, this)
             .then(obj => {
                 this.zwave = createZwave({port, options})
-                this.store = createStore(reducer, {devices: {}, nodes: []},
+                this.store = createStore(reducer, {devices: {}, nodes: [], zwave: {}},
                     (remotedev && composeWithDevTools({name, realtime: true, port: 6400, hostname: remotedev, maxAge: 200}) || (x => x))
                     (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave}))))
                 if (this.zwave) {

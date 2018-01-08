@@ -1,5 +1,5 @@
 import {log} from './log'
-import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET} from './actions'
+import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET, ZWAVE_VALUE_SET} from './actions'
 import {fromOzwValue} from './utils'
 
 export default function reducer (state, action) {
@@ -68,6 +68,18 @@ export default function reducer (state, action) {
         return {
             ...state, devices: {
                 ...state.devices, [id]: time ? {...device, value, time} : {...device, value}
+            }
+        }
+    }
+    case ZWAVE_VALUE_SET: {
+        log(action)
+        const
+            {id, value} = action,
+            zwave = state.zwave[id],
+            [[k, v]] = Object.entries(value)
+        return {
+            ...state, zwave: {
+                ...state.zwave, [id]: {...zwave, ...value}
             }
         }
     }
