@@ -13,3 +13,4 @@ export const
     deviceValueSet = (id, value) => ({type: DEVICE_VALUE_SET, id, value})
 
 export * from './apiActions'
+export * from './valueActions'

@@ -1,5 +1,4 @@
 import OpenZwave from 'openzwave-shared'
-import CommandClass from './CommandClass'
 import NotificationCode from './Notification'
 import {log} from './log'
 import {nodeSet, readyNode, addValue, changeValue, valueRemoved} from './actions'
