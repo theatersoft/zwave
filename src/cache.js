@@ -26,7 +26,7 @@ export const update = ({name, type, id, cid}) => {
         device = {...device, name}
     if (type && !device.type)
         device = {...device, type}
-    if (cid && cid !== device.cid)
+    if (cid && !device.cid)
         device = {...device, cid}
     if (cache[id] !== device) {
         cache[id] = device

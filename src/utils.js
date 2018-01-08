@@ -20,9 +20,9 @@ export const
         if (type) {
             const
                 id = String(nid),
-                intf = interfaceOfType(type),
-                cid = cidMap(nodeinfo) || cidOfInterface(intf);
-            ({name, type} = update({id, name, type, cid}))
+                intf = interfaceOfType(type)
+            let cid = cidMap(nodeinfo) || cidOfInterface(intf);
+            ({name, type, cid} = update({id, name, type, cid}))
             if (!name) name = `ZWave.${id}`
             const value = normalizeInterfaceValue(intf, getCidValuesValue(cid, values))
             device = {name, value, type, id}
