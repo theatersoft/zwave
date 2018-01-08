@@ -48,6 +48,7 @@ export const
     }
 
 import {nodeinfoSet, deviceSet} from './index'
+import {updateNodeDevice} from '../utils'
 
 export const
     readyNode = (nid, nodeinfo) => (dispatch, getState, {zwave}) => {
@@ -57,14 +58,4 @@ export const
         if (device) dispatch(deviceSet(device))
     }
 
-import {
-    updateNodeDevice,
-    typeOfValues,
-    cidOfInterface,
-    getCidValuesValue,
-    normalizeInterfaceValue,
-    getCidValueIndex,
-    timestampMotion,
-    cidMap
-} from '../utils'
 
