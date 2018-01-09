@@ -15,7 +15,7 @@ const
     zwaveValue = {
         [CommandClass.Battery]: // 128
             ({value}) => ({
-                battery: value
+                battery: {value}
             }),
         [CommandClass.WakeUp]: // 132
             ({value, index}) => ({
