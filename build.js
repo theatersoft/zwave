@@ -14,6 +14,7 @@ const
     copyright = `/*\n${fs.readFileSync('COPYRIGHT', 'utf8')}\n */`,
     {rollup} = require('rollup'),
     babel = require('rollup-plugin-babel'),
+    commonjs = require('rollup-plugin-commonjs'),
     ignore = require('rollup-plugin-ignore'),
     nodeResolve = require('rollup-plugin-node-resolve'),
     strip = require('rollup-plugin-strip'),
@@ -64,7 +65,8 @@ const targets = {
                     }),
                     DIST && ignore(['remote-redux-devtools']),
                     DIST && strip({functions: ['composeWithDevTools']}),
-                    nodeResolve({jsnext: true})
+                    nodeResolve({jsnext: true}),
+                    commonjs({include: ['node_modules/**']}),
                 ]
             })
             .then(bundle => bundle.write({
