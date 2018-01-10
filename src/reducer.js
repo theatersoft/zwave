@@ -1,6 +1,16 @@
 import {log} from './log'
-import {NODE_SET, NODEINFO_SET, VALUE_SET, VALUE_REMOVED, DEVICE_SET, DEVICE_VALUE_SET, ZWAVE_VALUE_SET} from './actions'
+import {
+    NODE_SET,
+    NODEINFO_SET,
+    VALUE_SET,
+    VALUE_REMOVED,
+    DEVICE_SET,
+    DEVICE_VALUE_SET,
+    ZWAVE_VALUE_SET
+} from './actions'
 import {fromOzwValue} from './utils'
+import update from 'immutability-helper'
+update.extend('$auto', (v, o) => o ? update(o, v) : update({}, v))
 
 export default function reducer (state, action) {
     switch (action.type) {
@@ -75,11 +85,10 @@ export default function reducer (state, action) {
         log(action)
         const
             {id, value} = action,
-            zwave = state.zwave[id],
-            [[k, v]] = Object.entries(value)
+            values = state.zwave[id] || {}
         return {
             ...state, zwave: {
-                ...state.zwave, [id]: {...zwave, ...value}
+                ...state.zwave, [id]: update(values, value)
             }
         }
     }

@@ -3,9 +3,7 @@ import CommandClass from '../CommandClass'
 import {valueSet, deviceValueSet, zwaveValueSet} from './index'
 import {fromOzwValue} from '../utils'
 import {
-    typeOfValues,
     cidOfInterface,
-    getCidValuesValue,
     normalizeInterfaceValue,
     getCidValueIndex,
     timestampMotion,
@@ -15,12 +13,18 @@ const
     zwaveValue = {
         [CommandClass.Battery]: // 128
             ({value}) => ({
-                battery: {value}
+                $merge: {
+                    battery: {value}
+                }
             }),
         [CommandClass.WakeUp]: // 132
             ({value, index}) => ({
                 wake: {
-                    [{0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]]: value
+                    $auto: {
+                        $merge: {
+                            [{0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]]: value
+                        }
+                    }
                 }
             })
     }
@@ -40,12 +44,9 @@ export const
         if (node.values[_cid][vid].value === value.value) return
         dispatch(valueSet(_value)) //TODO
         const device = state.devices[nid]
-
         if (zwaveValue[_cid])
             dispatch(zwaveValueSet(nid, zwaveValue[_cid](value)))
-
         if (!device) return
-
         const
             intf = interfaceOfType(device.type),
             cid = node.cid || cidOfInterface(intf), /// ???
