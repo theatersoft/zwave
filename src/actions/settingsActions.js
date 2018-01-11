@@ -4,12 +4,13 @@ import {getNodeOzwValue} from '../utils'
 export const
     getState = ({args: [id]}) => (dispatch, getState, {zwave}) => {
         const
-            {nodes} = getState(),
+            {nodes, zwave: _zwave} = getState(),
             {cid, values, ...others} = nodes[id]
         return {
             neighbors: zwave.getNodeNeighbors(id),
             polled: zwave.isPolled(getNodeOzwValue(id, nodes)),
-            ...others
+            ...others,
+            ..._zwave[id]
         }
     },
     setPolled = ({args: [id, value]}) => (dispatch, getState, {zwave}) => {
