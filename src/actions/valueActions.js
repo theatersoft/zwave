@@ -11,10 +11,32 @@ import {
 
 const
     zwaveValue = {
+        [CommandClass.Alarm]: // 113
+            ({value, index}) => ({
+                alarm: {
+                    $auto: {
+                        $merge: {
+                            [{0: 'type', 1: 'value', 2: 'sourceNode', 10: 'burglar'}[index]]: value
+                        }
+                    }
+                }
+            }),
+        [CommandClass.Basic]: // 32
+            ({value}) => ({
+                $merge: {
+                    basic: {value} // 0 | 255
+                }
+            }),
+        [CommandClass.BinarySensor]: // 48
+            ({value}) => ({
+                $merge: {
+                    binarySensor: {value} // boolean
+                }
+            }),
         [CommandClass.Battery]: // 128
             ({value}) => ({
                 $merge: {
-                    battery: {value}
+                    battery: {value} // 0-100 %
                 }
             }),
         [CommandClass.WakeUp]: // 132
