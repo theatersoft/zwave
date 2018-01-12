@@ -24,7 +24,7 @@ const
         [CommandClass.Basic]: // 32
             ({value}) => ({
                 $merge: {
-                    basic: {value} // 0 | 255
+                    basic: {value: Boolean(value)} // 0 | 255
                 }
             }),
         [CommandClass.BinarySensor]: // 48
