@@ -10,7 +10,7 @@ import {
 } from '../utils'
 
 const
-    zwaveValue = {
+    zwaveValueMapper = cid => ({
         [CommandClass.Alarm]: // 113
             ({value, index}) => ({
                 alarm: {
@@ -49,30 +49,30 @@ const
                     }
                 }
             })
-    }
+    }[cid])
 
 export const
     addValue = value => (dispatch, getState, {zwave}) => {
         dispatch(valueSet(value))
         const {class_id: cid, node_id: nid} = value
-        if (zwaveValue[cid])
-            dispatch(zwaveValueSet(nid, zwaveValue[cid](value)))
+        const mapper = zwaveValueMapper(cid)
+        if (mapper) dispatch(zwaveValueSet(nid, mapper(value)))
     },
     changeValue = _value => (dispatch, getState, {zwave}) => {
         const
             state = getState(),
-            [nid, vid, _cid, value] = fromOzwValue(_value),
+            [nid, vid, cid, value] = fromOzwValue(_value),
             node = state.nodes[nid]
-        if (node.values[_cid][vid].value === value.value) return
+        if (node.values[cid][vid].value === value.value) return
         dispatch(valueSet(_value)) //TODO
         const device = state.devices[nid]
-        if (zwaveValue[_cid])
-            dispatch(zwaveValueSet(nid, zwaveValue[_cid](value)))
         if (!device) return
+        const mapper = zwaveValueMapper(cid)
+        if (mapper) dispatch(zwaveValueSet(nid, mapper(value)))
         const
             intf = interfaceOfType(device.type),
-            cid = node.cid || cidOfInterface(intf), /// ???
-            index = getCidValueIndex(cid),
+            _cid = node.cid || cidOfInterface(intf), /// ???
+            index = getCidValueIndex(_cid),
             deviceValue = normalizeInterfaceValue(intf, value.value)
         if (cid === _cid && index === value.index && device.value !== deviceValue)
             dispatch(timestampMotion(deviceValueSet(nid, deviceValue), intf))
