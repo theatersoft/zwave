@@ -55,6 +55,7 @@ export const
     addValue = value => (dispatch, getState, {zwave}) => {
         dispatch(valueSet(value))
         const {class_id: cid, node_id: nid} = value
+        if (nid === 1) return
         const mapper = zwaveValueMapper(cid)
         if (mapper) dispatch(zwaveValueSet(nid, mapper(value)))
     },
