@@ -13,7 +13,7 @@ const
     zwaveValueMapper = cid => ({
         [CommandClass.Alarm]: // 113
             ({value, index}) => {
-                const key = [{0: 'type', 1: 'value', 2: 'sourceNode', 10: 'burglar'}[index]]
+                const key = [{0: 'type', 1: 'level', 10: 'burglar'}[index]]
                 return key && {alarm: {$auto: {$merge: {[key]: value}}}}
             },
         [CommandClass.Basic]: // 32
