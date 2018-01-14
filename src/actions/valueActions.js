@@ -9,11 +9,10 @@ import {
     timestampMotion,
 } from '../utils'
 
-const
-    zwaveValueMapper = cid => ({
+const maps = {
         [CommandClass.Alarm]: // 113
             ({value, index}) => {
-                const key = [{0: 'type', 1: 'level', 10: 'burglar'}[index]]
+                const key = {0: 'type', 1: 'level', 10: 'burglar'}[index]
                 return key && {alarm: {$auto: {$merge: {[key]: value}}}}
             },
         [CommandClass.Basic]: // 32
@@ -36,20 +35,23 @@ const
             }),
         [CommandClass.WakeUp]: // 132
             ({value, index}) => {
-                const key = [{0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]]
+                const key = {0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]
                 return key && {wake: {$auto: {$merge: {[key]: value}}}}
             }
-    }[cid])
+    },
+    dispatchZwaveValueSet = (dispatch, nid, cid, value) => {
+        const val = maps[cid] && maps[cid](value)
+        if (val) dispatch(zwaveValueSet(nid, val))
+    }
 
 export const
-    addValue = value => (dispatch, getState, {zwave}) => {
+    addValue = value => dispatch => {
         dispatch(valueSet(value))
         const {class_id: cid, node_id: nid} = value
         if (nid === 1) return
-        const mapper = zwaveValueMapper(cid)
-        if (mapper) dispatch(zwaveValueSet(nid, mapper(value)))
+        dispatchZwaveValueSet(dispatch, nid, cid, value)
     },
-    changeValue = _value => (dispatch, getState, {zwave}) => {
+    changeValue = _value => (dispatch, getState) => {
         const
             state = getState(),
             [nid, vid, cid, value] = fromOzwValue(_value),
@@ -58,8 +60,7 @@ export const
         dispatch(valueSet(_value)) //TODO
         const device = state.devices[nid]
         if (!device) return
-        const mapper = zwaveValueMapper(cid)
-        if (mapper) dispatch(zwaveValueSet(nid, mapper(value)))
+        dispatchZwaveValueSet(dispatch, nid, cid, value)
         const
             intf = interfaceOfType(device.type),
             _cid = node.cid || cidOfInterface(intf), /// ???
