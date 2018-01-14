@@ -10,7 +10,7 @@ export const
     DEVICE_SET = 'DEVICE_SET',
     deviceSet = (device) => ({type: DEVICE_SET, device}),
     DEVICE_VALUE_SET = 'DEVICE_VALUE_SET',
-    deviceValueSet = (id, value) => ({type: DEVICE_VALUE_SET, id, value}),
+    deviceValueSet = (id, value) => ({type: DEVICE_VALUE_SET, id, value, time: Date.now()}),
     ZWAVE_VALUE_SET = 'ZWAVE_VALUE_SET',
     zwaveValueSet = (id, value) => ({type: ZWAVE_VALUE_SET, id, value})
 

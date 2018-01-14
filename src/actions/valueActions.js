@@ -2,12 +2,6 @@ import {Interface, interfaceOfType, switchActions, dimmerActions} from '@theater
 import CommandClass from '../CommandClass'
 import {valueSet, deviceValueSet, zwaveValueSet} from './index'
 import {fromOzwValue} from '../utils'
-import {
-    cidOfInterface,
-    normalizeInterfaceValue,
-    getCidValueIndex,
-    timestampMotion,
-} from '../utils'
 
 const
     deviceValue = ({value}) => ([, value]),
@@ -63,7 +57,7 @@ export const
         if (zval) dispatch(zwaveValueSet(nid, zval))
 
         if (dval !== undefined && dval !== device.value)
-            dispatch(timestampMotion(deviceValueSet(nid, dval), Interface.SENSOR_BINARY))
+            dispatch(deviceValueSet(nid, dval))
 
         // const
         //     intf = interfaceOfType(device.type),
