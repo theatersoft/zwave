@@ -35,7 +35,7 @@ const maps = {
             }),
         [CommandClass.WakeUp]: // 132
             ({value, index}) => {
-                const key = {0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]
+                const key = {0: 'value', 1: 'min', 2: 'max', 4: 'step'}[index]
                 return key && {wake: {$auto: {$merge: {[key]: value}}}}
             }
     },
