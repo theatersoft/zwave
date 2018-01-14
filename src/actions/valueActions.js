@@ -9,31 +9,29 @@ import {
     timestampMotion,
 } from '../utils'
 
-const maps = {
-        [CommandClass.Alarm]: // 113
+const
+    deviceValue = ({value}) => ([, value]),
+    deviceBooleanValue = ({value}) => ([, Boolean(value)]),
+    maps = {
+        [CommandClass.Alarm]:
             ({value, index}) => {
-                const key = {0: 'type', 1: 'level', 10: 'burglar'}[index]
-                return [key && {alarm: {$auto: {$merge: {[key]: value}}}}]
+                const key = {0: 'type', 10: 'burglar'}[index]
+                return [
+                    key && {alarm: {$auto: {$merge: {[key]: value}}}},
+                    index === 10 ? value : undefined
+                ]
             },
-        [CommandClass.Basic]: // 32
+        [CommandClass.Basic]: deviceBooleanValue,
+        [CommandClass.BinarySensor]: deviceValue,
+        [CommandClass.BinarySwitch]: deviceValue,
+        [CommandClass.Battery]:
             ({value}) => ([{
                 $merge: {
-                    basic: {value: Boolean(value)} // 0 | 255
+                    battery: {value}
                 }
             }]),
-        [CommandClass.BinarySensor]: // 48
-            ({value}) => ([{
-                $merge: {
-                    binarySensor: {value} // boolean
-                }
-            }]),
-        [CommandClass.Battery]: // 128
-            ({value}) => ([{
-                $merge: {
-                    battery: {value} // 0-100 %
-                }
-            }]),
-        [CommandClass.WakeUp]: // 132
+        [CommandClass.MultilevelSwitch]: deviceValue,
+        [CommandClass.WakeUp]:
             ({value, index}) => {
                 const key = {0: 'value', 1: 'min', 2: 'max', 4: 'step'}[index]
                 return [key && {wake: {$auto: {$merge: {[key]: value}}}}]
@@ -54,6 +52,7 @@ export const
             state = getState(),
             [nid, vid, cid, value] = fromOzwValue(_value),
             node = state.nodes[nid]
+
         if (node.values[cid][vid].value === value.value) return
         dispatch(valueSet(_value)) //TODO
 
@@ -63,14 +62,14 @@ export const
         const [zval, dval] = mapValue(cid, value)
         if (zval) dispatch(zwaveValueSet(nid, zval))
 
-        if (dval && dval.value !== device.value)
+        if (dval !== undefined && dval !== device.value)
             dispatch(timestampMotion(deviceValueSet(nid, dval), Interface.SENSOR_BINARY))
 
-        const
-            intf = interfaceOfType(device.type),
-            _cid = node.cid || cidOfInterface(intf), /// ???
-            index = getCidValueIndex(_cid),
-            deviceValue = normalizeInterfaceValue(intf, value.value)
-        if (cid === _cid && index === value.index && device.value !== deviceValue)
-            dispatch(timestampMotion(deviceValueSet(nid, deviceValue), intf))
+        // const
+        //     intf = interfaceOfType(device.type),
+        //     _cid = node.cid || cidOfInterface(intf), /// ???
+        //     index = getCidValueIndex(_cid),
+        //     deviceValue = normalizeInterfaceValue(intf, value.value)
+        // if (cid === _cid && index === value.index && device.value !== deviceValue)
+        //     dispatch(timestampMotion(deviceValueSet(nid, deviceValue), intf))
     }
