@@ -37,33 +37,22 @@ export const
     addValue = value => dispatch => {
         dispatch(valueSet(value))
         const {class_id: cid, node_id: nid} = value
-        if (nid === 1) return
-        const [zval] = mapValue(cid, value)
-        if (zval) dispatch(zwaveValueSet(nid, zval))
+        if (nid > 1) {
+            const [zval] = mapValue(cid, value)
+            if (zval) dispatch(zwaveValueSet(nid, zval))
+        }
     },
     changeValue = _value => (dispatch, getState) => {
         const
             state = getState(),
             [nid, vid, cid, value] = fromOzwValue(_value),
             node = state.nodes[nid]
-
-        if (node.values[cid][vid].value === value.value) return
-        dispatch(valueSet(_value)) //TODO
-
+        if (node.values[cid][vid].value !== value.value) dispatch(valueSet(_value))
         const device = state.devices[nid]
-        if (!device) return
-
-        const [zval, dval] = mapValue(cid, value)
-        if (zval) dispatch(zwaveValueSet(nid, zval))
-
-        if (dval !== undefined && dval !== device.value)
-            dispatch(deviceValueSet(nid, dval))
-
-        // const
-        //     intf = interfaceOfType(device.type),
-        //     _cid = node.cid || cidOfInterface(intf), /// ???
-        //     index = getCidValueIndex(_cid),
-        //     deviceValue = normalizeInterfaceValue(intf, value.value)
-        // if (cid === _cid && index === value.index && device.value !== deviceValue)
-        //     dispatch(timestampMotion(deviceValueSet(nid, deviceValue), intf))
+        if (device) {
+            const [zval, dval] = mapValue(cid, value)
+            if (zval) dispatch(zwaveValueSet(nid, zval))
+            if (dval !== undefined && dval !== device.value)
+                dispatch(deviceValueSet(nid, dval))
+        }
     }
