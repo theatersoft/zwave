@@ -15,4 +15,5 @@ export const
     zwaveValueSet = (id, value) => ({type: ZWAVE_VALUE_SET, id, value})
 
 export * from './apiActions'
+export * from './nodeActions'
 export * from './valueActions'
