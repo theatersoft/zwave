@@ -12,15 +12,10 @@ import {
 const
     zwaveValueMapper = cid => ({
         [CommandClass.Alarm]: // 113
-            ({value, index}) => ({
-                alarm: {
-                    $auto: {
-                        $merge: {
-                            [{0: 'type', 1: 'value', 2: 'sourceNode', 10: 'burglar'}[index]]: value
-                        }
-                    }
-                }
-            }),
+            ({value, index}) => {
+                const key = [{0: 'type', 1: 'value', 2: 'sourceNode', 10: 'burglar'}[index]]
+                return key && {alarm: {$auto: {$merge: {[key]: value}}}}
+            },
         [CommandClass.Basic]: // 32
             ({value}) => ({
                 $merge: {
@@ -40,15 +35,10 @@ const
                 }
             }),
         [CommandClass.WakeUp]: // 132
-            ({value, index}) => ({
-                wake: {
-                    $auto: {
-                        $merge: {
-                            [{0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]]: value
-                        }
-                    }
-                }
-            })
+            ({value, index}) => {
+                const key = [{0: 'value', 1: 'min', 2: 'max', 3: 'default', 4: 'step'}[index]]
+                return key && {wake: {$auto: {$merge: {[key]: value}}}}
+            }
     }[cid])
 
 export const
