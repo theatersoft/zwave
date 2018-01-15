@@ -102,10 +102,10 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                         <Button label="Clear" raised accent inverse onClick={this.clearAssociations}/>
                     </ListItem>
                 </NestedList>
-                <Subheader label="Polling"/>
-                <ListItem label="Enabled">
-                    {polled !== undefined && <Switch checked={polled} onChange={this.onChangePolled}/>}
-                </ListItem>
+                {polled !== undefined && <Subheader label="Polling"/>}
+                {polled !== undefined && < ListItem label="Enabled">
+                    <Switch checked={polled} onChange={this.onChangePolled}/>
+                </ListItem>}
                 <Subheader label="Neighbors"/>
                 <NestedList label={JSON.stringify(neighbors)}>
                     <ListItem label="Rediscover">
