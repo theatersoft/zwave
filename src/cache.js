@@ -24,6 +24,8 @@ export const update = ({name, type, id, cid}) => {
     let device = cache[id] || {name, type, id}
     if (name && name !== device.name)
         device = {...device, name}
+    if (!device.name)
+        device = {...device, name: `ZWave.${device.id}`}
     if (type && !device.type)
         device = {...device, type}
     if (cid && !device.cid)
@@ -34,4 +36,3 @@ export const update = ({name, type, id, cid}) => {
     }
     return device
 }
-

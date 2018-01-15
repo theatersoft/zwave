@@ -51,7 +51,6 @@ const
                 intf = interfaceOfType(type)
             let cid = cidMap(nodeinfo) || cidOfInterface(intf);
             ({name, type, cid} = update({id, name, type, cid}))
-            if (!name) name = `ZWave.${id}`
             const value = normalizeInterfaceValue(intf, getCidValuesValue(cid, values))
             device = {name, value, type, id}
             nodeinfo = {...nodeinfo, cid}
