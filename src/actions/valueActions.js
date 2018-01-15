@@ -9,10 +9,10 @@ const
     maps = {
         [CommandClass.Alarm]:
             ({value, index}) => {
-                const key = {0: 'type', 10: 'burglar'}[index]
+                const key = {0: 'type', 1: 'level', 10: 'burglar'}[index]
                 return [
                     key && {alarm: {$auto: {$merge: {[key]: value}}}},
-                    index === 10 ? value : undefined
+                    index === 10 ? Boolean(value) : undefined
                 ]
             },
         [CommandClass.Basic]: deviceBooleanValue,
