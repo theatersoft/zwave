@@ -65,3 +65,5 @@ export const
         dispatch(nodeinfoSet(nid, info))
         if (device) dispatch(deviceSet(device))
     }
+
+export {getCidValueIndex}

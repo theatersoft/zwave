@@ -1,22 +1,27 @@
 import {Type, Interface, interfaceOfType, switchActions} from '@theatersoft/device'
-import {getNodeOzwValue} from '../utils'
+import CommandClass from "../CommandClass"
+
+const
+    valueId = (nid, cid) => ({node_id: nid, class_id: cid, index: 0, instance: 1}),
+    isSwitch = cid => cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch
 
 export const
     getState = ({args: [id]}) => (dispatch, getState, {zwave}) => {
         const
             {nodes, zwave: _zwave} = getState(),
-            {cid, values, ...others} = nodes[id]
+            {cid, values, ...info} = nodes[id]
         return {
             neighbors: zwave.getNodeNeighbors(id),
-            polled: zwave.isPolled(getNodeOzwValue(id, nodes)),
-            ...others,
+            ...isSwitch(cid) && {polled: zwave.isPolled(valueId(id, cid))},
+            ...info,
             ..._zwave[id]
         }
     },
     setPolled = ({args: [id, value]}) => (dispatch, getState, {zwave}) => {
         const
             {nodes} = getState(),
-            v = getNodeOzwValue(id, nodes)
+            {cid} = nodes[id],
+            v = valueId(id, cid)
         return value ? zwave.enablePoll(v, 1) : zwave.disablePoll(v)
     },
     healNode = ({args: [id]}) => (dispatch, getState, {zwave}) => {
