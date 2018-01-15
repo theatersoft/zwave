@@ -1,7 +1,7 @@
 'use strict'
 const
     {bus, log} = require('@theatersoft/bus'),
-    {CommandClass, getCidValuesValue} = require('@theatersoft/zwave'),
+    {CommandClass} = require('@theatersoft/zwave'),
     zwave = bus.proxy('ZWave'),
     toJson = o => JSON.stringify(o, null, ' '),
     columnify = (...cols) => (...strs) => strs.reduce((s, str, i) => s + (String(str) || '').slice(0, cols[i] && (cols[i] - 1)).padEnd(cols[i]), ''),
@@ -10,7 +10,7 @@ const
 
 bus.start().then(async () => {
     try {
-        const {nodes, devices} = await zwave.getState()
+        const {nodes, devices, zwave: _zwave} = await zwave.getState()
 
         const all = Object.entries(nodes)
             .map(([nid, o]) => ({nid, ...o}))
@@ -54,21 +54,8 @@ bus.start().then(async () => {
         logCid(49)
         logCid(113)
 
-        const logCidValues = cid => {
-            log(`${cid}`)
-            matchCid(cid).forEach(({nid, values}) => log(`${nid}:`, getCidValuesValue(cid, values)))
-        }
-
-        log('\ncid values')
-        logCidValues(113)
-
-        log('\ncid values')
-        logCidValues(48)
-
-        log('\n113 Burglar values')
-        all.filter(({values}) => values[113] && values[113][10])
-            .forEach(({nid, values}) => log(nid, values[113][10].value))
-
+        log('\nalarm values')
+        matchCid(113).forEach(({nid}) => log(`${nid}:`, _zwave[nid].alarm))
     }
     catch (e) {console.log(e)}
 })
