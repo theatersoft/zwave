@@ -83,10 +83,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
     }
 
     render ({api, ...props}, state) {
-        const
-            {name, value, type} = device,
-            {associations, neighbors, polled, manufacturer, product, manufacturerid, productid} = state,
-            {battery, wake} = state
+        const {manufacturer, product, manufacturerid, productid, type, battery, associations, neighbors, polled, wake} = state
         return (
             <Composed {...props}>
                 <Subheader label="Manufacturer"/>
@@ -94,6 +91,8 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                 <Subheader label="Product"/>
                 <ListItem label={product}/>
                 <ListItem label={`${manufacturerid}:${productid}`}/>
+                <Subheader label="Type"/>
+                <ListItem label={type}/>
                 {battery && <Subheader label="Battery"/>}
                 {battery && <ListItem label={battery.value}/>}
                 <Subheader label="Associations"/>
