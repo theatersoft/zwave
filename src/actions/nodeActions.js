@@ -67,3 +67,12 @@ export const
     }
 
 export {getCidValueIndex}
+
+import NotificationCode from '../Notification'
+const
+    invert = o => Object.entries(o).reduce((o, [k, v]) => (o[v] = k, o), {}),
+    codeKey = invert(NotificationCode)
+export const
+    notification = (nid, notif) => (dispatch, getState, {zwave}) => {
+        log(`notification node ${nid} code ${codeKey[notif]}`)
+    }

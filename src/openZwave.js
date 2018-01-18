@@ -1,12 +1,7 @@
 import OpenZwave from 'openzwave-shared'
-import NotificationCode from './Notification'
 import {log} from './log'
-import {nodeSet, readyNode, addValue, changeValue, valueRemoved} from './actions'
+import {nodeSet, readyNode, addValue, changeValue, valueRemoved, notification} from './actions'
 import {ZWave} from './ZWave'
-
-const
-    invert = o => Object.entries(o).reduce((o, [k, v]) => (o[v] = k, o), {}),
-    codeKey = invert(NotificationCode)
 
 let port
 
@@ -49,7 +44,7 @@ export function setZwaveStore (zwave, {dispatch}) {
             dispatch(readyNode(nid, nodeinfo))
         )
         .on('notification', (nid, notif) =>
-            log(`notification node ${nid} code ${codeKey[notif]}`)
+            dispatch(notification(nid, notif))
         )
         .on('scan complete', () => {
             log('scan complete')
