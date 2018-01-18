@@ -12,7 +12,7 @@ const
                 const key = {0: 'type', 1: 'level', 10: 'burglar'}[index]
                 return [
                     key && {alarm: {$auto: {$merge: {[key]: value}}}},
-                    index === 10 ? Boolean(value) : undefined
+                    index === 1 ? Boolean(value) : undefined
                 ]
             },
         [CommandClass.Basic]: deviceBooleanValue,
@@ -47,11 +47,13 @@ export const
             state = getState(),
             [nid, vid, cid, value] = fromOzwValue(_value),
             node = state.nodes[nid]
-        if (node.values[cid][vid].value !== value.value) dispatch(valueSet(_value))
+        if (node.values[cid][vid].value !== value.value)
+            dispatch(valueSet(_value))
         const device = state.devices[nid]
         if (device) {
             const [zval, dval] = mapValue(cid, value)
-            if (zval) dispatch(zwaveValueSet(nid, zval))
+            if (zval)
+                dispatch(zwaveValueSet(nid, zval))
             if (dval !== undefined && dval !== device.value)
                 dispatch(deviceValueSet(nid, dval))
         }
