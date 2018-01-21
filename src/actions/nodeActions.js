@@ -2,7 +2,6 @@ import {log} from '../log'
 import {nodeinfoSet, deviceSet} from './index'
 import CommandClass from "../CommandClass"
 import {Type, Interface, interfaceOfType} from '@theatersoft/device'
-import {update} from '../cache'
 
 const
     cidMap = ({manufacturerid, producttype, productid}) => ({
@@ -38,7 +37,7 @@ const
         for (const [cid, type] of map.entries())
             if (getCidValuesValue(cid, values) !== undefined) return type
     },
-    updateNodeDevice = (nid, nodeinfo) => {
+    updateNodeDevice = (nid, nodeinfo, service) => {
         const {product, values} = nodeinfo
         let device,
             {name} = nodeinfo,
@@ -50,7 +49,7 @@ const
                 id = String(nid),
                 intf = interfaceOfType(type)
             let cid = cidMap(nodeinfo) || cidOfInterface(intf);
-            ({name, type, cid} = update({id, name, type, cid}))
+            ({name, type, cid} = service.cache.update({id, name, type, cid}))
             const value = normalizeInterfaceValue(intf, getCidValuesValue(cid, values))
             device = {name, value, type, id}
             nodeinfo = {...nodeinfo, cid}
@@ -59,9 +58,9 @@ const
     }
 
 export const
-    readyNode = (nid, nodeinfo) => (dispatch, getState, {zwave}) => {
+    readyNode = (nid, nodeinfo) => (dispatch, getState, {service}) => {
         log('nodeReady', nid, nodeinfo)
-        const [device, info] = updateNodeDevice(nid, {...getState().nodes[nid], ...nodeinfo})
+        const [device, info] = updateNodeDevice(nid, {...getState().nodes[nid], ...nodeinfo}, service)
         dispatch(nodeinfoSet(nid, info))
         if (device) dispatch(deviceSet(device))
     }
