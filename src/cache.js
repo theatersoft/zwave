@@ -29,7 +29,7 @@ export class Cache {
         if (name && name !== device.name)
             device = {...device, name}
         if (!device.name)
-            device = {...device, name: `ZWave.${device.id}`}
+            device = {...device, name: `${this.service.name}.${device.id}`}
         if (type && !device.type)
             device = {...device, type}
         if (cid && !device.cid)
