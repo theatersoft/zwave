@@ -4,8 +4,8 @@ import {valueSet, deviceValueSet, zwaveValueSet} from './index'
 import {fromOzwValue} from '../utils'
 
 const
-    deviceValue = ({value}) => ([, value]),
-    deviceBooleanValue = ({value}) => ([, Boolean(value)]),
+    deviceValue = ({value, index}) => index === 0 && ([, value]),
+    deviceBooleanValue = ({value, index}) => index === 0 && ([, Boolean(value)]),
     maps = {
         [CommandClass.Alarm]:
             ({value, index}) => {
@@ -24,6 +24,7 @@ const
                     battery: {value}
                 }
             }]),
+        [CommandClass.DoorLock]: deviceValue,
         [CommandClass.MultilevelSwitch]: deviceValue,
         [CommandClass.WakeUp]:
             ({value, index}) => {
@@ -31,7 +32,7 @@ const
                 return [key && {wake: {$auto: {$merge: {[key]: value}}}}]
             }
     },
-    mapValue = (cid, value) => maps[cid] ? maps[cid](value) : []
+    mapValue = (cid, value) => maps[cid] && maps[cid](value) || []
 
 export const
     addValue = value => dispatch => {
