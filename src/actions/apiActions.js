@@ -20,7 +20,8 @@ export const
         }
         const
             {id, type} = action,
-            device = getState().devices[id]
+            device = getState().devices[id],
+            node = getState().nodes[id]
         if (!device) throw `no device for ${action}`
         const
             intf = interfaceOfType(device.type)
@@ -29,7 +30,7 @@ export const
             switch (type) {
             case ON:
             case OFF:
-                zwave.setValue(Number(id), CommandClass.BinarySwitch, 1, 0, action.type === ON)
+                zwave.setValue(Number(id), node.cid, 1, 0, action.type === ON)
                 return
             }
             return
