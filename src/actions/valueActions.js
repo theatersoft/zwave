@@ -55,7 +55,7 @@ export const
             const [zval, dval] = mapValue(cid, value)
             if (zval)
                 dispatch(zwaveValueSet(nid, zval))
-            if (dval !== undefined && dval !== device.value)
+            if (cid === node.cid && dval !== undefined && dval !== device.value)
                 dispatch(deviceValueSet(nid, dval))
         }
     }
