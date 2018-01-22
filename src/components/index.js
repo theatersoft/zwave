@@ -83,7 +83,7 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
     }
 
     render ({api, ...props}, state) {
-        const {manufacturer, product, manufacturerid, productid, type, ready, battery, associations, neighbors, polled, wake} = state
+        const {manufacturer, product, manufacturerid, productid, type, ready, battery, associations, neighbors, polled, wake, classes} = state
         return (
             <Composed {...props}>
                 <Subheader label="Manufacturer"/>
@@ -113,6 +113,8 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                         <Button label="Start" raised accent inverse onClick={this.healNode}/>
                     </ListItem>
                 </NestedList>
+                {classes && <Subheader label="Command Classes"/>}
+                {classes && <ul>{classes.map(s => <ListItem label={s}/>)}</ul>}
             </Composed>
         )
     }
