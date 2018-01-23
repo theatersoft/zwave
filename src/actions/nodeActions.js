@@ -34,7 +34,7 @@ const
     typeOfValues = values => {
         const map = new Map([
             [CommandClass.DoorLock, Type.Lock],
-            [CommandClass.BinarySwitch, Type.Switch],
+            [CommandClass.BinarySwitch, Type.LightSwitch],
             [CommandClass.MultilevelSwitch, Type.Dimmer],
             [CommandClass.Alarm, Type.OpenSensor]
         ])
