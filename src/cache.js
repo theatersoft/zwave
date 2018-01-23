@@ -3,8 +3,8 @@
 import fs from 'fs'
 import {log} from './log'
 
-const read = filename => {try {return JSON.parse(fs.readFileSync(filename, 'utf8'))} catch (e) {}}
-const write = (o, filename) => fs.writeFileSync(filename, JSON.stringify(o), 'utf8')
+const read = file => {try {return JSON.parse(fs.readFileSync(file, 'utf8'))} catch (e) {}}
+const write = (file, json) => fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf8')
 
 import {deviceSet, nodeinfoSet} from './actions'
 
@@ -36,7 +36,7 @@ export class Cache {
             device = {...device, cid}
         if (this.devices[id] !== device) {
             this.devices[id] = device
-            write(this.devices, this.filename)
+            write(this.filename, this.devices)
         }
         return device
     }
