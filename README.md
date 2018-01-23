@@ -9,21 +9,23 @@ encapsulates the [OpenZWave](https://github.com/OpenZWave) library to provide co
 
 3. Add a ZWave service configuration object to your site `config.json` to the `services` array of a `hosts` object. E.g:
     ```json
-       {
-          "module": "@theatersoft/zwave",
-          "export": "ZWave",
-          "name": "ZWave",
-          "config": {
+    {
+        "module": "@theatersoft/zwave",
+        "export": "ZWave",
+        "name": "ZWave",
+        "config": {
             "port": "/dev/ttyACM0",
             "options": {
-              "Logging": true,
-              "ConsoleOutput": true,
-              "SaveLogLevel": 5
+                "NetworkKey": "0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x10,0x11,0x12,0x13,0x14,0x15,0x16",
+                "Logging": true,
+                "ConsoleOutput": true,
+                "SaveLogLevel": 5
             }
-          }
-        }      
+        }
+    }    
     ```
-    
+    *NetworkKey is the secret 16 byte value used for secure communication with security devices.*
+     
 4. `npm run config deploy` to complete `zwave` service installation.
 
 ## Operation
