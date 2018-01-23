@@ -20,8 +20,7 @@ export const
         }
         const
             {id, type} = action,
-            device = getState().devices[id],
-            node = getState().nodes[id]
+            {devices: {[id]: device}, nodes: {[id]: node}} = getState()
         if (!device) throw `no device for ${action}`
         const
             intf = interfaceOfType(device.type)
