@@ -13,6 +13,9 @@ const
         [Interface.SWITCH_MULTILEVEL]: CommandClass.MultilevelSwitch,
         [Interface.SENSOR_BINARY]: CommandClass.Alarm
     }[intf]),
+    cidOfType = type => ({
+        [Type.Lock]: CommandClass.DoorLock
+    }[type]),
     getCidValueIndex = cid =>
         cid === CommandClass.Alarm ? 1 : 0,
     getCidValuesValue = (cid, values) => {
@@ -30,6 +33,7 @@ const
     },
     typeOfValues = values => {
         const map = new Map([
+            [CommandClass.DoorLock, Type.Lock],
             [CommandClass.BinarySwitch, Type.Switch],
             [CommandClass.MultilevelSwitch, Type.Dimmer],
             [CommandClass.Alarm, Type.OpenSensor]
@@ -48,7 +52,7 @@ const
             const
                 id = String(nid),
                 intf = interfaceOfType(type)
-            let cid = cidMap(nodeinfo) || cidOfInterface(intf);
+            let cid = cidMap(nodeinfo) || cidOfType(type) || cidOfInterface(intf);
             ({name, type, cid} = service.cache.update({id, name, type, cid}))
             const value = normalizeInterfaceValue(intf, getCidValuesValue(cid, values))
             device = {name, value, type, id}
