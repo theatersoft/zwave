@@ -30,7 +30,7 @@ export class ZWave {
         mkdirpSync(this.configDir)
         return bus.registerObject(name, this)
             .then(obj => {
-                this.zwave = createZwave({port, options})
+                this.zwave = createZwave({port, options, UserPath: this.configDir})
                 this.store = createStore(reducer, {devices: {}, nodes: [], zwave: {}},
                     (remotedev && composeWithDevTools({name, realtime: true, port: 6400, hostname: remotedev, maxAge: 200}) || (x => x))
                     (applyMiddleware(thunk.withExtraArgument({zwave: this.zwave, service: this}))))

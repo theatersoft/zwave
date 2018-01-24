@@ -1,17 +1,16 @@
 import OpenZwave from 'openzwave-shared'
 import {log} from './log'
 import {nodeSet, readyNode, addValue, changeValue, valueRemoved, notification} from './actions'
-import {ZWave} from './ZWave'
 
 let port
 
-export function createZwave ({port: p, options}) {
+export function createZwave ({port: p, options, UserPath}) {
     port = p
     return new OpenZwave({
         Logging: false,
         ConsoleOutput: false,
         SaveConfiguration: true,
-        UserPath: ZWave.configDir,
+        UserPath,
         ...options
     })
 }
