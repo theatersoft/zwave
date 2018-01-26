@@ -79,3 +79,6 @@ Suppose that returned `{ name: 'Kitchen outlet', value: true, type: 'Switch', id
 ```js
 zwave.dispatch({type: 'OFF', id: '5' })
 ``` 
+
+### Discussion
+Join the [Theatersoft Community](https://community.theatersoft.com).
