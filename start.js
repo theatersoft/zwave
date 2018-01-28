@@ -1,1 +1,1 @@
-require('@theatersoft/server/lib').startLocalService(process.argv[3])
+require('@theatersoft/server/lib').startLocalService(process.argv[2])

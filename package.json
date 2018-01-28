@@ -30,12 +30,10 @@
       "BUS": "XDG_CONFIG_HOME=/opt/theatersoft/.config env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
       "DEVBUS": "env $(cat ~/.config/theatersoft/.bus | xargs)",
       "link": "npm link --no-package-lock; npm link --no-package-lock @theatersoft/bus @theatersoft/server @theatersoft/zwave",
-      "start": "npm run BUS -- node start.js /dev/zwave",
-      "start:zwave2": "npm run BUS -- node start.js /dev/zwave2 ZWave2",
-      "start:dev": "npm run DEVBUS -- node start.js /dev/zwave",
-      "debug": "npm run BUS -- node --inspect-brk start.js /dev/zwave",
-      "debug:zwave2": "npm run BUS -- node --inspect-brk start.js /dev/zwave2 ZWave2",
-      "debug:dev": "npm run DEVBUS -- node --inspect-brk start.js /dev/zwave"
+      "start": "npm run BUS -- node start.js ZWave",
+      "start:zwave2": "npm run BUS -- node start.js ZWave2",
+      "debug": "npm run BUS -- node --inspect-brk start.js ZWave",
+      "debug:zwave2": "npm run BUS -- node --inspect-brk start.js ZWave2"
     }
   },
   "devDependencies": {
