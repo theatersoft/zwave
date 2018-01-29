@@ -49,8 +49,8 @@ export const ServiceSettings = (Composed, {service: {id: name}}) => connect(sele
             <Composed {...props}>
                 {item('Add device', 'add')}
                 {item('Remove device', 'remove')}
-                <ListItem label="OZW cache">
-                    <Button label="Write" raised accent inverse onClick={this.writeConfig}/>
+                <ListItem label="OZW Config">
+                    <Button label="Save" raised accent inverse onClick={this.writeConfig}/>
                 </ListItem>
             </Composed>
         )
