@@ -37,7 +37,8 @@ Once a device is added, it appears in the Device menu under its detected type. A
 
 ## API
 
-`zwave` implement the types and interfaces exported from [device](https://github.com/theatersoft/device). Theatersoft Device types are influenced by the need to support the wide range of Z-Wave devices but all low level Z-Wave details (Command Class implementation, configuration, etc.) are hidden and managed within the service. 
+`zwave` implements [device](https://github.com/theatersoft/device) types and interfaces common to all Theatersoft 
+device services. All low level Z-Wave details (Command Class implementation, configuration, etc.) are hidden and managed internally. 
 
 ### State
 
