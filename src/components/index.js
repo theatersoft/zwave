@@ -73,6 +73,10 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
         })
     }
 
+    refreshBattery = () => {
+        settings(service, 'refreshBattery', id)
+    }
+
     healNode = () => {
         settings(service, 'healNode', id)
     }
@@ -96,7 +100,11 @@ export const DeviceSettings = (Composed, {service, id, device}) => connect(undef
                 <Subheader label="Ready"/>
                 <ListItem label={String(ready)}/>
                 {battery && <Subheader label="Battery"/>}
-                {battery && <ListItem label={battery.value}/>}
+                {battery && <NestedList label={battery.value}>
+                    <ListItem>
+                        <Button label="Refresh" raised accent inverse onClick={this.refreshBattery}/>
+                    </ListItem>
+                </NestedList>}
                 <Subheader label="Associations"/>
                 <NestedList label={JSON.stringify(associations)}>
                     <ListItem label="Remove all">

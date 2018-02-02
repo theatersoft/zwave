@@ -2,7 +2,7 @@ import {Type, Interface, interfaceOfType, switchActions} from '@theatersoft/devi
 import CommandClass from "../CommandClass"
 
 const
-    valueId = (nid, cid) => ({node_id: nid, class_id: cid, index: 0, instance: 1}),
+    valueId = (node_id, class_id, index = 0, instance = 1) => ({node_id, class_id, index, instance}),
     isSwitch = cid => cid === CommandClass.BinarySwitch || cid === CommandClass.MultilevelSwitch,
     invert = o => Object.entries(o).reduce((o, [k, v]) => (o[v] = k, o), {}),
     inverseCC = invert(CommandClass)
@@ -29,4 +29,7 @@ export const
     },
     healNode = ({args: [id]}) => (dispatch, getState, {zwave}) => {
         zwave.healNetworkNode(id)
+    },
+    refreshBattery = ({args: [id]}) => (dispatch, getState, {zwave}) => {
+        zwave.refreshValue(valueId(id, CommandClass.Battery))
     }
