@@ -48,7 +48,7 @@ export const
             state = getState(),
             [nid, vid, cid, value] = fromOzwValue(_value),
             node = state.nodes[nid]
-        if (node.values[cid][vid].value !== value.value)
+        if (node.values[cid] && node.values[cid][vid] && node.values[cid][vid].value !== value.value)
             dispatch(valueSet(_value))
         const device = state.devices[nid]
         if (device) {
