@@ -8,12 +8,34 @@ const
     DIST = process.env.DIST === 'true',
     deleteKey = (o, k) => (k && delete o[k], o),
     dependencies = deleteKey(pkg.dist.dependencies, DIST && 'remote-redux-devtools'),
-    path = require('path'),
     fs = require('fs'),
     writeJson = (file, json) => fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'),
     copyright = `/*\n${fs.readFileSync('COPYRIGHT', 'utf8')}\n */`,
     {rollup} = require('rollup'),
     babel = require('rollup-plugin-babel'),
+    babelPlugins = [
+        require("babel-plugin-transform-class-properties"),
+        [require("babel-plugin-transform-object-rest-spread"), {useBuiltIns: true}],
+        [require("babel-plugin-transform-react-jsx"), {pragma: 'h'}],
+        // [require("babel-plugin-transform-optional-chaining"), {loose: true}],
+        require("babel-plugin-external-helpers"),
+    ].concat(DIST ? [
+        require("babel-plugin-minify-constant-folding"),
+        //require("babel-plugin-minify-dead-code-elimination"), // FAIL NodePath has been removed so is read-only
+        require("babel-plugin-minify-flip-comparisons"),
+        require("babel-plugin-minify-guarded-expressions"),
+        require("babel-plugin-minify-infinity"),
+        require("babel-plugin-minify-mangle-names"),
+        require("babel-plugin-minify-replace"),
+        //FAIL require("babel-plugin-minify-simplify"),
+        require("babel-plugin-minify-type-constructors"),
+        require("babel-plugin-transform-member-expression-literals"),
+        require("babel-plugin-transform-merge-sibling-variables"),
+        require("babel-plugin-transform-minify-booleans"),
+        require("babel-plugin-transform-property-literals"),
+        require("babel-plugin-transform-simplify-comparison-operators"),
+        require("babel-plugin-transform-undefined-to-void")
+    ] : []),
     commonjs = require('rollup-plugin-commonjs'),
     ignore = require('rollup-plugin-ignore'),
     nodeResolve = require('rollup-plugin-node-resolve'),
@@ -40,28 +62,7 @@ const targets = {
                         babelrc: false,
                         comments: !DIST,
                         minified: DIST,
-                        //presets: [babili],
-                        plugins: [
-                            require("babel-plugin-transform-class-properties"),
-                            [require("babel-plugin-transform-object-rest-spread"), {useBuiltIns: true}],
-                            require("babel-plugin-external-helpers"),
-                        ].concat(DIST ? [
-                            require("babel-plugin-minify-constant-folding"),
-                            //require("babel-plugin-minify-dead-code-elimination"), // FAIL NodePath has been removed so is read-only
-                            require("babel-plugin-minify-flip-comparisons"),
-                            require("babel-plugin-minify-guarded-expressions"),
-                            require("babel-plugin-minify-infinity"),
-                            require("babel-plugin-minify-mangle-names"),
-                            require("babel-plugin-minify-replace"),
-                            //FAIL require("babel-plugin-minify-simplify"),
-                            require("babel-plugin-minify-type-constructors"),
-                            require("babel-plugin-transform-member-expression-literals"),
-                            require("babel-plugin-transform-merge-sibling-variables"),
-                            require("babel-plugin-transform-minify-booleans"),
-                            require("babel-plugin-transform-property-literals"),
-                            require("babel-plugin-transform-simplify-comparison-operators"),
-                            require("babel-plugin-transform-undefined-to-void")
-                        ] : [])
+                        plugins: babelPlugins
                     }),
                     DIST && ignore(['remote-redux-devtools']),
                     DIST && strip({functions: ['composeWithDevTools']}),
@@ -121,31 +122,7 @@ const targets = {
                     babelrc: false,
                     comments: !DIST,
                     minified: DIST,
-                    //presets: [babili],
-                    plugins: [
-                        [require("babel-plugin-transform-object-rest-spread"), {useBuiltIns: true}],
-                        require("babel-plugin-transform-class-properties"),
-                        [require("babel-plugin-transform-react-jsx"), {pragma: 'h'}],
-                        //require("babel-plugin-transform-decorators-legacy"),
-                        // babel-plugin-transform-decorators-legacy provided an invalid property of "default"
-                        require("babel-plugin-external-helpers"),
-                    ].concat(DIST ? [
-                        require("babel-plugin-minify-constant-folding"),
-                        //FAIL require("babel-plugin-minify-dead-code-elimination"), // es build unusable
-                        require("babel-plugin-minify-flip-comparisons"),
-                        require("babel-plugin-minify-guarded-expressions"),
-                        require("babel-plugin-minify-infinity"),
-                        require("babel-plugin-minify-mangle-names"),
-                        require("babel-plugin-minify-replace"),
-                        //FAIL require("babel-plugin-minify-simplify"),
-                        require("babel-plugin-minify-type-constructors"),
-                        require("babel-plugin-transform-member-expression-literals"),
-                        require("babel-plugin-transform-merge-sibling-variables"),
-                        require("babel-plugin-transform-minify-booleans"),
-                        require("babel-plugin-transform-property-literals"),
-                        require("babel-plugin-transform-simplify-comparison-operators"),
-                        require("babel-plugin-transform-undefined-to-void")
-                    ] : [])
+                    plugins: babelPlugins
                 })
             ]
         })
