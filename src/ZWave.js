@@ -4,7 +4,7 @@ import {composeWithDevTools} from 'remote-redux-devtools'
 import reducer from './reducer'
 import {createZwave, setZwaveStore} from './openZwave'
 import {bus} from '@theatersoft/bus'
-import {log} from './log'
+import {setTag} from './log'
 import {api} from './actions'
 import {Cache} from './cache'
 import {mkdirpSync} from './utils'
@@ -28,6 +28,7 @@ export class ZWave {
         Object.assign(this, {name, port})
         this.configDir = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft/${name}`
         mkdirpSync(this.configDir)
+        setTag(name)
         return bus.registerObject(name, this)
             .then(obj => {
                 this.zwave = createZwave({port, options, UserPath: this.configDir})
