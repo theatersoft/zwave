@@ -51,7 +51,7 @@ const targets = {
         console.log('target node')
         exec('mkdir -p dist')
         rollup({
-                entry: 'src/index.js',
+                input: 'src/index.js',
                 external: [
                     'util',
                     'fs',
@@ -71,9 +71,9 @@ const targets = {
                 ]
             })
             .then(bundle => bundle.write({
-                    dest: `dist/${name}.js`,
+                    file: `dist/${name}.js`,
                     format: 'cjs',
-                    moduleName: name,
+                    name,
                     banner: copyright,
                     sourceMap: DIST ? false : 'inline'
                 }))
@@ -83,7 +83,7 @@ const targets = {
     async client () {
         console.log('target bundle')
         const bundle = await rollup({
-            entry: 'src/components/index.js',
+            input: 'src/components/index.js',
             external: [
                 'preact',
                 'preact-redux',
@@ -127,9 +127,9 @@ const targets = {
             ]
         })
         await bundle.write({
-            dest: `dist/${name}.es.js`,
+            file: `dist/${name}.es.js`,
             format: 'es',
-            moduleName: name,
+            name,
             banner: copyright,
             sourceMap: !DIST // bus sourcemap must be file to passthrough rollup consumers
         })
